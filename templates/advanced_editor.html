@@ -1,0 +1,200 @@
+<%
+query_mol_struc = results_dic['search_mol']
+urls = results_dic['urls_dic']
+dbs = results_dic['dbs']
+results_id = results_dic['query_id']
+trans = results_dic['trans_class'].trans
+lang_selected = results_dic['trans_class'].selected
+mode_selected = results_dic['mode_selected']
+db_selected = results_dic['db_selected']
+clear = trans('clear')
+prequery = results_dic['prequery']
+%>
+        <script type="text/javascript" src="${urls['js_dir']}/dojo.xd.js"></script>
+        <script type="text/javascript" src="${urls['js_dir']}/Chemene.JSDraw.js"></script>
+        <script language="javascript">
+            var pref = 'm'
+            var buf_idx = 1;
+            var clear_idx = null;
+            var id = null;
+            var cell_num = 9;
+            function copy_to_buffer() {
+                var editor_mol_smi = JSDraw.get("advmoleditor").getSmiles();
+                var have_same = false;
+                if (editor_mol_smi) {
+                    if (!clear_idx) {
+                        if (buf_idx < cell_num + 1) {
+                            id = pref + buf_idx;
+                            buf_idx++;
+                        } else {
+                            buf_idx = cell_num + 1;
+                            alert("${trans('no empty cells left')}")
+                        }
+                    } else {
+                        id = pref + clear_idx;
+                    }
+                    // check if a same mol already exists
+                    for (var j = 1; j < cell_num + 1; j++) {
+                        if (JSDraw.get(pref + j).getSmiles() == editor_mol_smi) {
+                            have_same = true;
+                            break;
+                        }
+                    }
+                    // check if mol not null
+                    while (JSDraw.get(id).getSmiles()) {
+                        buf_idx++;
+                        id = pref + buf_idx;
+                    }
+                    if (have_same) {
+                        have_same = false;
+                        buf_idx--;
+                        alert("${trans('there is already another same molecule in buffer')}");
+                    } else if (buf_idx <= cell_num + 1) {
+                        clear_idx = null;
+                        JSDraw.get(id).setHtml(JSDraw.get("advmoleditor").getHtml());
+                    }
+                }
+            }
+            function clear_mol(idx) {
+                var mol = JSDraw.get(pref+idx);
+                if (mol.getSmiles()) {
+                    clear_idx = idx;
+                    buf_idx--;
+                    mol.clear();
+                    mol.refresh();
+                }
+            }
+            function adv_get_mol_info() {
+                var smiless = '';
+                var mols = '';
+                var slct = document.form1.dbchoose;
+                var text = "${trans('input your query here')}";
+                var query = document.getElementById('query');
+                var in_results = document.getElementById('in_results');
+                for (var k = 1; k < cell_num + 1; k++) {
+                    smi = JSDraw.get(pref + k).getSmiles();
+                    if (smi) {
+                        // many smiles split with '|'
+                        smiless += pref + k + ':' + smi + '|';
+                        mols += pref + k + ':' + JSDraw.get(pref + k).getMolfile() + '|';
+                    }
+                }
+                if (query.value && query.value != text) {
+                    if (in_results.checked) {
+                        document.form1.search_in_results.value = in_results.value;
+                    }
+                    document.form1.smiless.value = smiless;
+                    document.form1.mols.value = mols;
+                    document.form1.query.value = query.value;
+                    document.form1.db.value = slct.options[slct.selectedIndex].value;
+                    document.form1.submit();
+                } else {
+                    alert("${trans('no query to search')}");
+                }
+            }
+            function reset_text() {
+            % if prequery:
+                // nothing to do
+            % else:
+                var text = "${trans('input your query here')}";
+                var query = document.getElementById('query');
+                if (!query.value) {
+                    query.value = text;
+                } else if (query.value == text) {
+                    query.value = '';
+                }
+            % endif
+            }
+        </script>
+        <script type="text/javascript">JSDraw.init();</script>
+        <div id="wrapcentre">
+            <table width="100%" cellspacing="0">
+                <tr>
+                    <td id="row3">
+                        <table width="100%">
+                            <th colspan="3">
+                                ${trans('molecule buffer')} (${trans('double click cell to edit')})
+                            </th>
+                            <th colspan="1">${trans('mol editor')}</th>
+                            <tr>
+                                <td>
+                                    <div class='JSDraw' id="m1" viewonly popup molfile=''></div>
+                                    <span>m1</span>
+                                    <input type="button" onclick="clear_mol('1')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m4" viewonly popup molfile=''></div>
+                                    <span>m4</span>
+                                    <input type="button" onclick="clear_mol('4')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m7" viewonly popup molfile=''></div>
+                                    <span>m7</span>
+                                    <input type="button" onclick="clear_mol('7')" value="${clear}"></input>
+                                </td>
+                                <td>
+                                    <div class='JSDraw' id="m2" viewonly popup molfile=''></div>
+                                    <span>m2</span>
+                                    <input type="button" onclick="clear_mol('2')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m5" viewonly popup molfile=''></div>
+                                    <span>m5</span>
+                                    <input type="button" onclick="clear_mol('5')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m8" viewonly popup molfile=''></div>
+                                    <span>m8</span>
+                                    <input type="button" onclick="clear_mol('8')" value="${clear}"></input>
+                                </td>
+                                <td>
+                                    <div class='JSDraw' id="m3" viewonly popup molfile=''></div>
+                                    <span>m3</span>
+                                    <input type="button" onclick="clear_mol('3')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m6" viewonly popup molfile=''></div>
+                                    <span>m6</span>
+                                    <input type="button" onclick="clear_mol('6')" value="${clear}"></input>
+                                    <div class='JSDraw' id="m9" viewonly popup molfile=''></div>
+                                    <span>m9</span>
+                                    <input type="button" onclick="clear_mol('9')" value="${clear}"></input>
+                                </td>
+                                <td align="center" rowspan="2">
+                                    <div class='JSDraw' id="advmoleditor" molfile=''></div>
+                                    <input type="button" onclick="copy_to_buffer()" value="${trans('copy to buffer')}"></input>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="row3" align="center">
+                        <hr/>
+                        <span>${trans('input query')} (<a href="${urls['doc_url']}?doc_id=query_rules" target="_blank">${trans('document')}</a>): </span>
+                        % if prequery:
+                            <input type="text" id="query" size="100%" onclick="reset_text();" onblur="reset_text();" value="${prequery} ">
+                        % else:
+                            <input type="text" id="query" size="100%" onclick="reset_text();" onblur="reset_text();" value="${trans('input your query here')}">
+                        % endif
+                    </td>
+                </tr>
+                <tr>
+                    <td id="row4" align="center">
+                        <form name="form1" action="${urls['search_url']}" method="post">
+                            <span>${trans('search mode')}</span>
+                            <select id="modeslct" onchange="chmode(this.options[this.selectedIndex].value)">
+                                <option value="2" ${mode_selected("2")}>${trans('normal mode')}</option>
+                                <option value="4" ${mode_selected("4")}>${trans('advanced mode')}</option>
+                            </select>&nbsp;|
+                            <span>${trans('choose database')}</span>
+                            <select name="dbchoose">
+                                % for d in dbs:
+                                    <%
+                                    txt = 'name of db ' + d
+                                    %>
+                                    <option value="${d}" ${db_selected(d)}>${trans(txt)}</option>
+                                % endfor
+                            </select>&nbsp;|
+                            <input type="button" onclick="adv_get_mol_info()" value="${trans('begin search')}"</input>
+                            <input type="checkbox" id="in_results" value="${results_id}">${trans('search in results')}</input>
+                            <input type="hidden" name="smiless">
+                            <input type="hidden" name="mols">
+                            <input type="hidden" name="mode" value="4">
+                            <input type="hidden" name="db">
+                            <input type="hidden" name="query">
+                            <input type="hidden" name="search_in_results">
+                        </form>
+                    </td>
+                </tr>
+            </table>

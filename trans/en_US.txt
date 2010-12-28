@@ -1,0 +1,183 @@
+2D structure of the molecule:Molecular 2D structure
+about:About
+actions:Actions
+active:Active
+add mol:Add molecule
+advanced mode:&nbsp;Advanced mode
+advanced search:Advanced search
+approve:Approve
+approve user:Approve user
+approved users:Approved users
+at least one admin is needed:at least one admin is needed
+begin search:Search
+blog:Blog
+both new passwd and confirm passwd are needed:Both new pass word and confirm pass word are needed
+can not edit mol:No permission to edit
+change group:Change group
+change nick name:Change nick name
+change settings:Change settings
+check your query:An error occurs, please check your query.
+chinese:Chinese
+choose database:Choose database
+clear:Clear
+click me:click me
+click to show details:Click to show details of
+completed:Completed:Completed:Completed
+confirm change:Confirm change
+confirm passwd:Confirm pass word
+confirm when you want to change your pass word:Confirm when you want to change your pass word
+confirm your pass word:Confirm your pass word
+contains illegal words:Contains illegal words!
+copy right:Copy right © 2010-2012 xiooli &lt;xioooli[at]yahoo.com.cn&gt;<br/>to get better browse experience, please use google chrome or firefox.
+copy to buffer:Copy to buffer
+current mol:Current molecule
+current page: Current page
+current page shows:Current page shows
+deactive:Deactive
+del failed:Deleting molecule failed
+del mol:Delete molecule
+del mol failed:Deleting the following molecule(s) failed (you may have no permission to delete them)
+desctiptions:descriptions
+document:document
+documents:Documents
+double click cell to edit:double click cell to edit
+edit:Edit
+edit mol finished:Edit molecule finished
+email:Email address
+email is used as login name here:Email is used as login name here
+empty mol entry:Empty molecule(s) entry:
+empty pass word entry:Empty pass word entry!
+empty user name entry:Empty user name entry!
+english:English
+extra results were cut off:extra results were cut off
+failed:failed
+failed to get user info:Failed to get user info
+failed to open document:Failed to open document
+full match:Exact search
+get mol:Get Mol file
+get smiles:Get smiles
+help:Help
+hide calculables:Hide calculables
+hide last query:Hide last query
+home:Home
+id:ID
+info:Info:
+info not completed:Info not completed
+input a group number here:Input a group number here
+input mol id here:Input mol id here
+input query:Input query
+input your query here:--- Input your query here ---
+it:it
+IUPAC systematic name:IUPAC name
+jump to:Jump to
+language:Language
+last query:Last query
+last results:last results
+length of nick should between 2 and 20:Length of nick should between 2 and 20
+login:Login
+logout:Logout
+max results num:Max results number
+Molecular formula:Molecular formula
+Molecular ID:Molecular ID
+Molecular weight:Molecular weight
+molecule buffer:Molecule buffer
+mol editor:Molecular structure editor
+mol id:Molecular ID
+mol id not post:Molecular id not yet posted
+mol info:Molecule details
+mol mark:Mol mark
+mol structure:Molecular structure
+more about mol:More about the molecule:
+more info:More info
+more:More ...
+mymols:My molecules
+name of db 1:Pubchem
+name of db 2:Cibmoldb
+needed entries:Needed entries (can not be calculated out by the system)
+needed entry imcomplete:Needed entry imcomplete
+needed entry:needed entry
+needed only when changing passwd:Needed only when changing passwd
+new mol:New molecule
+new passwd and confirm passwd are not equal:New pass word and confirm pass word are not equal
+new passwd:New pass word
+next:Next
+nick length not fit:Nick length not fit
+nick:Nick name
+no empty cells left:No empty cells left!
+no molecular structure to search:No molecular structure to search
+no mol:No molecular
+no mol to show:No molecule to show
+no query to search:No query to search!
+no result:No results
+not yet searched:Not yet searched
+normal mode:&nbsp;Normal mode
+normal search:Normal search
+no such user:No such user
+nothing to change:Nothing to change
+not valid user name:Not valid user name
+old passwd is needed when changing passwd:Old pass word is needed when changing pass word
+old passwd:Old pass word
+old pass word is needed:Old pass word is needed
+options:Options
+pass word incorrect:Pass word incorrect, please try it again!
+pass word not well confirmed:Pass word not well confirmed
+pass word:Pass word
+permission denied:Permission denied
+please waiting for been approved:please waiting for been approved
+previous:Previous
+query and mode not match:Query string and query mode not match
+query err:Query error!
+query imcomplete:Search query imcomplete!
+query mol:Mol queried
+query mol structure:Molecular 2D structure
+query:Query
+records:records
+register finished:Register finished
+register:Register
+remove:Remove
+search in results:Search in results
+search mode:Search mode
+search results:Found records
+search:Search
+search site:Search site
+search type: Search type
+similarity:Semilarity
+simi search:Similarity search
+simi value:Semilarity
+settings updated successfully:Settings updated successfully
+should be integer:Should be integer
+should choose in:Should choose in
+show calculables:Show calculables
+show last query:Show last query
+status 0:Inactive
+status 1:Active
+status -1:Unapproved
+status:Status
+submiter:Submiter
+submit:Submit
+sub search:Substructure search
+sup search:Superstructure search
+successed:successed
+sure del mol:Are you sure you want to delete this molecule?
+sure to do this:Are you sure you want to do this?
+there is already another same molecule in buffer:There is already another same molecule in buffer!
+time consumed:Time consumed
+total pages:Total pages
+to:to
+unapproved users:Unapproved users
+user already registered:User already registered
+user control panel:User control panel
+user group:User group
+user had been deactived:User had been deactived
+user management:User managerment
+user name:User name
+user not valid:Seems that you are not valid user, please register first.
+user:user
+values:Values
+welcome here:Welcome to MYMOLDB
+wrong db name:Wrong database name (you may have no permission to access this database)
+wrong old pass word:Wrong old pass word
+you can change your pass word here:You can change your pass word here
+you can not:you can not
+you hava already submited your info:You hava already submited your info
+you have no permission to access here:You have no permission to access here!

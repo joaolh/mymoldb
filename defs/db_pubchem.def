@@ -1,0 +1,129 @@
+#vim:ft=sh
+#
+# name of keys should be uniq, while the primary key of all the tables should be the same.
+# Format of definition lines:
+# >>>TABLE_NAME:table_name:table args
+# key:MySQL_field_name:MySQL_field_type:comment:PRIMARY/INDEX/COMPRESS:default value:abbreviation
+#(only those you want to use in advanced mode are needed)
+#
+#================================BEGIN======================================
+
+>>>MOL_FP:mol_fp:ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='the open babel fingerprints in decimal'
+
+FP_MOL_ID:mol_id:INT(11) UNSIGNED NOT NULL:pubchem compound cid:PRIMARY:0:mid
+FP_BITS:fp_bits:SMALLINT UNSIGNED NOT NULL:::0:
+FP01:fp01:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP02:fp02:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP03:fp03:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP04:fp04:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP05:fp05:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP06:fp06:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP07:fp07:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP08:fp08:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP09:fp09:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP10:fp10:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP11:fp11:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP12:fp12:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP13:fp13:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP14:fp14:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP15:fp15:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP16:fp16:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP17:fp17:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP18:fp18:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP19:fp19:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP20:fp20:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP21:fp21:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP22:fp22:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP23:fp23:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP24:fp24:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP25:fp25:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP26:fp26:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP27:fp27:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP28:fp28:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP29:fp29:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP30:fp30:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP31:fp31:BIGINT(20) UNSIGNED NOT NULL:::0:
+FP32:fp32:BIGINT(20) UNSIGNED NOT NULL:::0:
+
+>>>MOL_DATA:mol_data:ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='the infomation of the molecules'
+
+DATA_MOL_ID:mol_id:INT(11) UNSIGNED NOT NULL:pubchem compound cid:PRIMARY:0:
+SUBMITER_ID:submiter_id:VARCHAR(50) NOT NULL:submiter id::0:sid
+PUBCHEM_ATOM_DEF_STEREO_COUNT:pubchem_atom_def_stereo_count:INT(11) NOT NULL:pubchem atom def stereo_count:::
+PUBCHEM_ATOM_UDEF_STEREO_COUNT:pubchem_atom_udef_stereo_count:INT(11) NOT NULL:pubchem atom udef stereo_count:::
+PUBCHEM_BONDANNOTATIONS:pubchem_bondannotations:TEXT NOT NULL:pubchem bondannotations:::
+PUBCHEM_BOND_DEF_STEREO_COUNT:pubchem_bond_def_stereo_count:INT(11) NOT NULL:pubchem bond def stereo count:::
+PUBCHEM_BOND_UDEF_STEREO_COUNT:pubchem_bond_udef_stereo_count:INT(11) NOT NULL:pubchem bond udef stereo count:::
+PUBCHEM_CACTVS_COMPLEXITY:pubchem_cactvs_complexity:INT(11) NOT NULL:pubchem cactvs complexity:::
+PUBCHEM_CACTVS_HBOND_ACCEPTOR:pubchem_cactvs_hbond_acceptor:INT(11) NOT NULL:pubchem cactvs hbond acceptor:::
+PUBCHEM_CACTVS_HBOND_DONOR:pubchem_cactvs_hbond_donor:INT(11) NOT NULL:pubchem cactvs hbond donor:::
+PUBCHEM_CACTVS_ROTATABLE_BOND:pubchem_cactvs_rotatable_bond:INT(11) NOT NULL:pubchem cactvs rotatable bond:::
+PUBCHEM_CACTVS_SUBSKEYS:pubchem_cactvs_subskeys:VARCHAR(255) NOT NULL:pubchem cactvs subskeys:::
+PUBCHEM_CACTVS_TAUTO_COUNT:pubchem_cactvs_tauto_count:INT(11) NOT NULL:pubchem cactvs tauto count:::
+PUBCHEM_CACTVS_TPSA:pubchem_cactvs_tpsa:DOUBLE NOT NULL:pubchem cactvs tpsa:::
+PUBCHEM_COMPONENT_COUNT:pubchem_component_count:INT(11) NOT NULL:pubchem component count:::
+PUBCHEM_COMPOUND_CANONICALIZED:pubchem_compound_canonicalized:INT(11) NOT NULL:pubchem compound canonicalized:::
+PUBCHEM_COORDINATE_TYPE:pubchem_coordinate_type:TEXT NOT NULL:pubchem coordinate type:::
+PUBCHEM_EXACT_MASS:pubchem_exact_mass:DOUBLE NOT NULL:pubchem exact mass:::ems
+PUBCHEM_HEAVY_ATOM_COUNT:pubchem_heavy_atom_count:INT(11) NOT NULL:pubchem heavy atom count:::hac
+PUBCHEM_ISOTOPIC_ATOM_COUNT:pubchem_isotopic_atom_count:INT(11) NOT NULL:pubchem isotopic atom count:::
+PUBCHEM_IUPAC_CAS_NAME:pubchem_iupac_cas_name:TEXT NOT NULL:pubchem iupac cas name:::
+PUBCHEM_IUPAC_NAME:pubchem_iupac_name:TEXT NOT NULL:pubchem iupac name:::
+PUBCHEM_IUPAC_OPENEYE_NAME:pubchem_iupac_openeye_name:TEXT NOT NULL:pubchem iupac openeye name:::
+PUBCHEM_IUPAC_SYSTEMATIC_NAME:pubchem_iupac_systematic_name:TEXT NOT NULL:pubchem iupac systematic name:::snm
+PUBCHEM_IUPAC_TRADITIONAL_NAME:pubchem_iupac_traditional_name:TEXT NOT NULL:pubchem iupac traditional name:::tnm
+PUBCHEM_MOLECULAR_FORMULA:pubchem_molecular_formula:VARCHAR(50) NOT NULL:pubchem molecular formula:::fm
+PUBCHEM_MOLECULAR_WEIGHT:pubchem_molecular_weight:DOUBLE NOT NULL:pubchem molecular weight:::mw
+PUBCHEM_MONOISOTOPIC_WEIGHT:pubchem_monoisotopic_weight:DOUBLE NOT NULL:pubchem monoisotopic weight:::
+PUBCHEM_NIST_INCHI:pubchem_nist_inchi:TEXT NOT NULL:pubchem nist inchi:::
+PUBCHEM_NIST_INCHIKEY:pubchem_nist_inchikey:VARCHAR(100) NOT NULL:pubchem nist inchikey:::
+PUBCHEM_NONSTANDARDBOND:pubchem_nonstandardbond:VARCHAR(200) NOT NULL:pubchem nonstandardbond:::
+PUBCHEM_OPENEYE_CAN_SMILES:pubchem_openeye_can_smiles:TEXT NOT NULL:pubchem openeye can smiles:::
+PUBCHEM_OPENEYE_ISO_SMILES:pubchem_openeye_iso_smiles:TEXT NOT NULL:pubchem openeye iso smiles:::
+OPENBABEL_CAN_SMILES:openbabel_can_smiles:TEXT NOT NULL:openbabel can smiles:::smi
+MD5_OPENBABEL_CAN_SMILES:md5_openbabel_can_smiles:VARCHAR(32) NOT NULL:md5 openbabel can smiles:INDEX,32::
+PUBCHEM_TOTAL_CHARGE:pubchem_total_charge:INT(11) NOT NULL:pubchem total charge:::tchg
+PUBCHEM_XLOGP3:pubchem_xlogp3:INT(11) NOT NULL:pubchem xlogp3:::
+PUBCHEM_XLOGP3_AA:pubchem_xlogp3_aa:DOUBLE NOT NULL:pubchem xlogp3 aa:::
+
+>>>MOL_STAT:mol_stat:ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='the molecular statistics'
+
+STAT_MOL_ID:mol_id:INT(11) UNSIGNED NOT NULL:pubchem compound cid:PRIMARY:0:
+NUM_ATOMS:n_atoms:SMALLINT(6) NOT NULL:number of the total atoms::0:na
+NUM_BONDS:n_bonds:SMALLINT(6) NOT NULL:number of the total bonds::0:nb
+NUM_RINGS:n_rings:SMALLINT(6) NOT NULL:number of the total rings::0:nr
+NUM_R3:n_r3:SMALLINT(6) NOT NULL:number of the 3-membered rings::0:nr3
+NUM_R4:n_r4:SMALLINT(6) NOT NULL:number of the 4-membered rings::0:nr4
+NUM_R5:n_r5:SMALLINT(6) NOT NULL:number of the 5-membered rings::0:nr5
+NUM_R6:n_r6:SMALLINT(6) NOT NULL:number of the 6-membered rings::0:nr6
+NUM_R7:n_r7:SMALLINT(6) NOT NULL:number of the 7-membered rings::0:nr7
+NUM_R8:n_r8:SMALLINT(6) NOT NULL:number of the 8-membered rings::0:nr8
+NUM_RX:n_rx:SMALLINT(6) NOT NULL:number of the x-membered (x > 8) rings::0:nrx
+NUM_C:n_C:SMALLINT(6) NOT NULL:number of element C::0:nc
+NUM_Car:n_Car:SMALLINT(6) NOT NULL:number of aromatic C::0:ncar
+NUM_C1:n_C1:SMALLINT(6) NOT NULL:number of sp C::0:nc1
+NUM_C2:n_C2:SMALLINT(6) NOT NULL:number of sp2 C::0:nc2
+NUM_C3:n_C3:SMALLINT(6) NOT NULL:number of sp3 C::0:nc3
+NUM_H:n_H:SMALLINT(6) NOT NULL:number of element H::0:nh
+NUM_O:n_O:SMALLINT(6) NOT NULL:number of element O::0:no
+NUM_O2:n_O2:SMALLINT(6) NOT NULL:number of sp2 O::0:no2
+NUM_O3:n_O3:SMALLINT(6) NOT NULL:number of sp3 O::0:no3
+NUM_N:n_N:SMALLINT(6) NOT NULL:number of element N::0:nn
+NUM_Nar:n_Nar:SMALLINT(6) NOT NULL:number of aromatic N::0:nnar
+NUM_N1:n_N1:SMALLINT(6) NOT NULL:number of sp N::0:nn1
+NUM_N2:n_N2:SMALLINT(6) NOT NULL:number of sp2 N::0:nn2
+NUM_N3:n_N3:SMALLINT(6) NOT NULL:number of sp3 N::0:nn3
+NUM_P:n_P:SMALLINT(6) NOT NULL:number of element P::0:np
+NUM_S:n_S:SMALLINT(6) NOT NULL:number of element S::0:ns
+NUM_S2:n_S2:SMALLINT(6) NOT NULL:number of sp2 S::0:ns2
+NUM_S3:n_S3:SMALLINT(6) NOT NULL:number of sp3 S::0:ns3
+NUM_F:n_F:SMALLINT(6) NOT NULL:number of element F::0:nf
+NUM_Cl:n_Cl:SMALLINT(6) NOT NULL:number of element Cl::0:ncl
+NUM_Br:n_Br:SMALLINT(6) NOT NULL:number of element Br::0:nbr
+NUM_I:n_I:SMALLINT(6) NOT NULL:number of element I::0:ni
+NUM_X:n_X:SMALLINT(6) NOT NULL:number of other elements::0:
+
+>>>MOL_STRUC:mol_struc:ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='the molecular structure (2D only)'
+
+STRUC_MOL_ID:mol_id:INT(11) UNSIGNED NOT NULL:pubchem compound cid:PRIMARY:0:
+MOL_2D_STRUC:mol_2d_struc:MEDIUMBLOB NOT NULL:structure data in mol format:COMPRESS::

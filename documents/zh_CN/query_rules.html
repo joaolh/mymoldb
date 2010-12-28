@@ -1,0 +1,647 @@
+## 高级检索检索语句规则
+<h1>高级模式检索语句规则</h1>
+    本文简要介绍该规则.
+    检索语句本质上是一个布尔（逻辑）表达式，进行检索时是一步步计算其中的每个小表达式，得出真的结果后再计算下一个小表达式，直到最终的结果为真，则给出符合该表达式的结果。
+    表达式可以组合和嵌套（加括号）。值类型为整数/浮点数的关键字支持的运算符有 =、!=、&lt;、&gt;、&gt;=、&lt;=，值类型为字符串的关键字支持的运算符有 =、!=、~，其中 ~ 表示匹配（like）其后面的值可以跟通配符 % （表示匹配任意字符任意多个），值为字符串的关键字运算符后面的值必须用 '/" 括起来，注意这些符合均须在英文状态下输入。
+    子表达式可以用 and/or 运算符连接起来，and 必须两个表达式都为真时整个表达式才为真，or 在其中有一个表达式为真时即为真，表达式的值可以用运算符 not 取反。
+<h2>示例</h2>
+    假设分子缓冲区里面有三个结构，其编号分别为 m1、m2 和 m3，那么想要检索既含有子结构 m1 又含有子结构 m2，或者是既含有子结构 m1 又不含有子结构 m3 并且分子量小于 450 的化合物，限制结果最多 50 个，那么就可以写出下面的检索语句：
+<div class="code">
+    ( ( sub = m1 and sub = m2 ) or ( sub = m1 and sub != m3 ) ) and mw &lt; 450 max = 50
+</div>
+    因为 not 关键字可以用来取反逻辑值，所以上面的语句又可以写为：
+<div class="code">
+    ( ( sub = m1 and sub = m2 ) or ( sub = m1 and not ( sub = m3 ) ) ) and mw &lt; 450 max = 50
+</div>
+    注意：max 关键词是用来限定结果个数的，不能跟其他表达式用 and/or 等运算符连接。
+    又比如想要检索名字里面含有 methanol 的化合物，那么就可以对系统名关键字 (snm) 或传统名关键字 (tnm) 使用 ~ 运算符进行检索：
+<div class="code">
+    snm ~ '%methanol%' or tnm ~ '%methanol%' max = 50
+</div>
+    注意：值类型为字符串的一定要用 '/" 括起来
+<h2>关键词</h2>
+    检索语句只能包括下面列举的关键词，含有非法词（非下面所列举的词）会被当作错误处理。
+    不同数据库其关键词列表可能不同，下面是数据库 Pubchem 所定义的关键词。
+<br/>
+<table align="center" width="80%">
+    <tr>
+        <td colspan="4">
+            数据库 Pubchem 的关键词列表 ( 除关键词 sub 外，其他关键词均须小写 )
+        </td>
+    </tr>
+    <tr>
+        <th>
+            关键词
+        </th>
+        <th>
+            含义
+        </th>
+        <th>
+            运算符
+        </th>
+        <th>
+            值类型
+        </th>
+    <tr>
+        <td>
+            sub
+        </td>
+        <td>
+            子结构
+        </td>
+        <td>
+            =, !=
+        </td>
+        <td>
+            缓冲区分子编号 (字符串)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            max
+        </td>
+        <td>
+            结果最大限制数
+        </td>
+        <td>
+            =
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            sid
+        </td>
+        <td>
+            确认者 ID
+        </td>
+        <td>
+            =, !=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ems
+        </td>
+        <td>
+            精确质量
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            浮点数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            fm
+        </td>
+        <td>
+            分子式
+        </td>
+        <td>
+            =, !=, ~
+        </td>
+        <td>
+            字符串
+        </td>
+    </tr>
+    <tr>
+        <td>
+            hac
+        </td>
+        <td>
+            重原子（除氢外的）数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            mid
+        </td>
+        <td>
+            分子 ID
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            mw
+        </td>
+        <td>
+            分子量
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            浮点数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            na
+        </td>
+        <td>
+            原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nb
+        </td>
+        <td>
+            键个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nc
+        </td>
+        <td>
+            碳原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nc1
+        </td>
+        <td>
+            sp 杂化碳个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nc2
+        </td>
+        <td>
+            sp2 碳个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nc3
+        </td>
+        <td>
+            sp3 杂化碳个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ncar
+        </td>
+        <td>
+            芳香碳个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nh
+        </td>
+        <td>
+            氢原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            no
+        </td>
+        <td>
+            氧原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            no2
+        </td>
+        <td>
+            sp2 杂化氧个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            no3
+        </td>
+        <td>
+            sp3 杂化氧个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ns
+        </td>
+        <td>
+            硫原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ns2
+        </td>
+        <td>
+            sp2 杂化硫个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ns3
+        </td>
+        <td>
+            sp3 杂化硫个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nn
+        </td>
+        <td>
+            氮原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nn1
+        </td>
+        <td>
+            sp 杂化氮个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nn2
+        </td>
+        <td>
+           sp2 杂化氮个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nn3
+        </td>
+        <td>
+            sp3 化氮个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nnar
+        </td>
+        <td>
+            芳香氮个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            np
+        </td>
+        <td>
+            磷原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nf
+        </td>
+        <td>
+            氟原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ncl
+        </td>
+        <td>
+            氯原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nbr
+        </td>
+        <td>
+            溴原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            ni
+        </td>
+        <td>
+            碘原子个数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            smi
+        </td>
+        <td>
+            OPENBABEL CANONICAL SMILES 表达式
+        </td>
+        <td>
+            =, !=, ~
+        </td>
+        <td>
+            字符串
+        </td>
+    </tr>
+    <tr>
+        <td>
+            snm
+        </td>
+        <td>
+            Iupac 系统名
+        </td>
+        <td>
+            =, !=, ~
+        </td>
+        <td>
+            字符串
+        </td>
+    </tr>
+    <tr>
+        <td>
+            tnm
+        </td>
+        <td>
+            Iupac 传统名
+        </td>
+        <td>
+            =, !=, ~
+        </td>
+        <td>
+            字符串
+        </td>
+    </tr>
+    <tr>
+        <td>
+            tchg
+        </td>
+        <td>
+            总电荷
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            符号整数 (正号省略)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr3
+        </td>
+        <td>
+            三元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr4
+        </td>
+        <td>
+            四元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr5
+        </td>
+        <td>
+            五元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr6
+        </td>
+        <td>
+            六元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr7
+        </td>
+        <td>
+            七元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nr8
+        </td>
+        <td>
+            八元环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+    <tr>
+        <td>
+            nrx
+        </td>
+        <td>
+            大于八元的环数
+        </td>
+        <td>
+            =, !=, &lt;, &gt;, &gt;=, &lt;=
+        </td>
+        <td>
+            整数
+        </td>
+    </tr>
+</table>

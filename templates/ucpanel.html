@@ -1,0 +1,51 @@
+<%
+trans = results_dic['trans_class'].trans
+urls = results_dic['urls_dic']
+ucp_urls = results_dic['ucp_urls']
+%>
+        <script language="javascript">
+            function clickurl(url, info) {
+                var page1 = document.getElementById('page1');
+                var span1 = document.getElementById('span1');
+                if (url && page1) {
+                    page1.src = url;
+                    if (span1 && info) { span1.innerText = info; }
+                }
+            }
+        </script>
+        <div id="warpcentre">
+            <table width="100%" height="80%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td width="20%" valign="top">
+                        <table width="100%" border="0" cellspacing="0" cellspacing="0">
+                            <tr>
+                                <th>${trans('options')}</th>
+                            </tr>
+                            % for nm, url, target in ucp_urls:
+                                <tr>
+                                    <td class="row1">
+                                        % if target:
+                                            <a class="genmed" href="${url}" target="${target}">${trans(nm)}</a>
+                                        % else:
+                                            <a class="genmed" href="javascript:;" onclick="clickurl('${url}', '${trans(nm)}')">${trans(nm)}</a>
+                                        % endif
+                                    </td>
+                                </tr>
+                            % endfor
+                        </table>
+                    </td>
+                    <td width="80%" height="100%" valign="top">
+                        <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <th><span id="span1">${trans(ucp_urls[0][0])}</span></th>
+                            </tr>
+                            <tr>
+                                <td height="100%">
+                                    <iframe src="${ucp_urls[0][1]}" width="100%" height="100%" frameborder="no" id="page1"></iframe>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>

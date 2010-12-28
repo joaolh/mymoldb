@@ -1,0 +1,24 @@
+## About this database
+<h2>A. Running environment</h2>
+<h3>1. Operating system</h3>
+This databse is totally built on open sourced platform, in this solution, 64 bit Arch GNU/Linux is adopted. Out puts of command 'uname -a' are listed bellow:
+<div class="code">
+    Linux NP-SERVER 2.6.34-ARCH #1 SMP PREEMPT Sat Jun 19 00:07:49 CEST 2010 x86_64 Intel(R) Core(TM)2 Quad CPU Q9550 @ 2.83GHz GenuineIntel GNU/Linux
+</div>
+<h3>2. Web server</h3>
+lighttpd/1.4.26 (ssl) is used;
+<h3>3. Database server</h3>
+We use MySQL as our database server, its current version is 5.1.47;
+<h3>4. Backend language</h3>
+Python version 2.6.5 is used as the backend language, python based web frame work web.py is used for web things handling.  The cheminfomatics related functionalities such as fingerprints calculation, SMILES canonicalization, SMARTS parsing, molecule 3D coordination and so on are provided by python-openbabel, a python wrapper for OpenBable. The whole web site is running as a hook on lighttpd via fastcgi, those urls start with /db/ are rederected to the main script of the site.
+
+<h2>B. Data source</h2>
+Our solution supports multi-database running at the same time. In this circumstance, one of these supported databases, pubchem which contains structures and some physical properties of about 27.6 million chemicals, its data comes from <a href="http://pubchem.ncbi.nlm.nih.gov/">pubchem project</a>. A script is running in the background of the server checking for data updates once a week, so, the data set is still on improving.
+<p>Local data set from our own team is not yet added into the database, please wait.
+<h2>C. Access control</h2>
+As a resource consuming work, chemical search service on this server can suport only limited independent ips, so, you can only access this service in the ip range of CIB, ips come from out side the range are baned. Sorry for the inconvenience.
+<h2>D. Advices</h2>
+Searching for a rare structure may consume a lot of time, it's normal with in 5 minuts, please keep calm. In all these searches, semilarity search consumes resources the most, please do not play on this option if not necessary :) .
+<p>As for broswer suports, google chrome benifits the most, firefox steps next, while IE just works. I think you know which one to choose.
+<p>Any probles encountered in use, please do not hesitate to contact me.
+<p>In a word, it's my pleasure if it helps :)

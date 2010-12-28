@@ -1,0 +1,85 @@
+<%
+query_mol_struc = results_dic['search_mol']
+results_id = results_dic['query_id']
+dbs = results_dic['dbs']
+urls = results_dic['urls_dic']
+trans = results_dic['trans_class'].trans
+lang_selected = results_dic['trans_class'].selected
+mode_selected = results_dic['mode_selected']
+db_selected = results_dic['db_selected']
+%>
+        <script type="text/javascript" src="${urls['js_dir']}/dojo.xd.js"></script>
+        <script type="text/javascript" src="${urls['js_dir']}/Chemene.JSDraw.js"></script>
+        <script language="javascript">
+            function get_mol_info() {
+                var smiles = JSDraw.get("moleditor").getSmiles();
+                var mol = JSDraw.get("moleditor").getMolfile();
+                var slct = document.form1.dbchoose;
+                var in_results = document.getElementById('in_results')
+                if (smiles!=null) {
+                    if (in_results.checked) {
+                        document.form1.search_in_results.value = in_results.value;
+                    }
+                    document.form1.smiles.value = smiles;
+                    document.form1.mol.value = mol;
+                    document.form1.db.value = slct.options[slct.selectedIndex].value;
+                    document.form1.submit();
+                } else {
+                    alert("${trans('no molecular structure to search')}");
+                }
+            }
+        </script>
+        <script type="text/javascript">JSDraw.init();</script>
+        <div id="wrapcentre">
+            <table width="100%">
+                <tr height="350px">
+                    <td id="row3" align="center">
+                        <table width="60%" >
+                            <tr>
+                                <td>
+                                    <div class='JSDraw' id="moleditor" molfile='${query_mol_struc}'></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="row3" height="30px;" align="center">
+                        <form name="form1" action="${urls['search_url']}" method="post">
+                            <input type="radio" name="mode" value="1">${trans('full match')}</input>
+                            <input type="radio" name="mode" value="2" checked>${trans('sub search')}</input>
+                            <input type="radio" name="mode" value="5">${trans('sup search')}</input>
+                            <input type="radio" name="mode" value="3">${trans('simi search')}</input>
+                            <input type="text" name="min_simi" value="0.9"></input>
+                            <hr/>
+                            <span>${trans('search mode')}</span>
+                            <select id="modeslct" onchange="chmode(this.options[this.selectedIndex].value)">
+                                <option value="2" ${mode_selected("2")}>${trans('normal mode')}</option>
+                                <option value="4" ${mode_selected("4")}>${trans('advanced mode')}</option>
+                            </select>&nbsp;|
+                            <span>${trans('choose database')}</span>
+                            <select name="dbchoose">
+                                % for d in dbs:
+                                    <%
+                                    txt = 'name of db ' + d
+                                    %>
+                                    <option value="${d}" ${db_selected(d)}>${trans(txt)}</option>
+                                % endfor
+                            </select>
+                            <input type="hidden" name="smiles">
+                            <input type="hidden" name="mol">
+                            <input type="hidden" name="db">
+                            <input type="hidden" name="search_in_results" onclick="uncheck()">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="row4" align="center">
+                        <input type="button" onclick='alert(JSDraw.get("moleditor").getMolfile())' value="${trans('get mol')}"></input>
+                        <input type="button" onclick='alert(JSDraw.get("moleditor").getSmiles())' value="${trans('get smiles')}"></input>
+                        <input type="button" onclick="get_mol_info()" value="${trans('begin search')}"></input>
+                        <input type="checkbox" id="in_results" value="${results_id}">${trans('search in results')}</input>
+                    </td>
+                </tr>
+            </table>
+        </div>

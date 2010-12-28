@@ -1,0 +1,70 @@
+<%
+logged_user = results_dic['logged_user']
+urls = results_dic['urls_dic']
+db = results_dic['db']
+info = results_dic['result_list']
+mol_struc = results_dic['mol']
+mol_id = results_dic['mol_id']
+show_edit = results_dic['show_edit']
+trans = results_dic['trans_class'].trans
+%>
+<%def name="tr(values)">
+        <tr>
+    % for i in range(len(values)):
+        % if i == 0:
+            <td width="30%">${values[i]}</td>
+        % else:
+            % if values[i] or values[i] == 0:
+            <td width="70%">${values[i]}</td>
+            % else:
+            <td width="70%">&nbsp;</td>
+            % endif
+        % endif
+    % endfor
+        </tr>\
+</%def>
+       % if info:
+            <script type="text/javascript" src="${urls['js_dir']}/dojo.xd.js"></script>
+            <script type="text/javascript" src="${urls['js_dir']}/Chemene.JSDraw.js"></script>
+            <script type="text/javascript">JSDraw.init();</script>
+            <script language="javascript">
+                function edit_mol() {
+                    window.location = "${urls['editmol_url']}?mol_id=${mol_id}&db=${db}";
+                }
+                function del_mol() {
+                    if (confirm("${trans('sure del mol')}")) {
+                        window.location = "${urls['delmol_url']}?mol_id=${mol_id}&db=${db}";
+                    }
+                }
+            </script>
+            <table width="100%" cellpadding="0" id="top_info">
+                <tr>
+                    <td align="left">
+                        ${trans('current mol')} ID: ${mol_id}
+                        % if show_edit:
+                            <span>&nbsp;|</span>
+                            <input type="button" onclick="edit_mol()" value="${trans('edit')}"></input>
+                            <span>&nbsp;|</span>
+                            <input type="button" onclick="del_mol()" value="${trans('del mol')}"></input>
+                        % endif
+                    </td>
+                <tr>
+            </table>
+            <h2>${trans('more about mol')}</h2>
+            <h3>${trans('query mol structure')}</h3>
+            <table align="center">
+                <tr>
+                    <td>
+                        <div style="border: 1px solid gray;" class='JSDraw' id="infomolview" viewonly molfile='${mol_struc}'></div>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <h3>${trans('more info')}</h3>
+            <br/>
+            <div style="border: 1px solid gray;">
+                <table id="molinfo" width="100%">
+                    ${''.join([tr(d) for d in info])}
+                </table>
+            </div>
+        % endif

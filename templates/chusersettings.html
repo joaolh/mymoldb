@@ -1,0 +1,98 @@
+<%
+trans = results_dic['trans_class'].trans
+urls = results_dic['urls_dic']
+nick_name = results_dic['nick_name']
+info = results_dic['info']
+reload_parent = results_dic['reload_parent']
+email = results_dic['email']
+%>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="${urls['css_dir']}/style.css" />
+    </head>
+    % if reload_parent:
+        <body style="margin: 0;" onload="javascript:parent.location.reload()">
+    % else:
+        <body style="margin: 0;">
+    % endif
+        <script language="javascript">
+            function submit_settings() {
+                var nick = document.form1.nick.value;
+                var new_pw = document.form1.new_pw.value;
+                var cfm_pw = document.form1.cfm_pw.value;
+                var old_pw = document.form1.old_pw.value;
+                if (nick) {
+                    if (! (nick.length >= 2 && nick.length <= 20) ) {
+                        alert('${trans('nick length not fit')}');
+                        return
+                    }
+                }
+                if (new_pw || cfm_pw) {
+                    if (old_pw) {
+                        if (! (new_pw && cfm_pw) ) {
+                            alert('${trans('both new passwd and confirm passwd are needed')}');
+                            return
+                        } else if ( ! new_pw == cfm_pw ) {
+                             alert('${trans('new passwd and confirm passwd are not equal')}');
+                             return
+                        }
+                    } else {
+                        alert('${trans('old passwd is needed when changing passwd')}');
+                        return
+                    }
+                }
+                document.form1.submit();
+            }
+        </script>
+        <form name="form1" action="${urls['chusersetting_url']}" method="post">
+            <table class="tablebg" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="genmed" width="40%">
+                        <h3>${trans('change nick name')}: </h3><p>${trans('length of nick should between 2 and 20')}
+                    </td>
+                    <td class="genmed" width="60%"><input type="text" size="30" maxlength="100" name="nick" value="${nick_name}"></input></td>
+                </tr>
+                <tr>
+                    <td class="genmed" width="40%">
+                        <h3>${trans('email')}: </h3><p>${trans('email is used as login name here')}
+                    </td>
+                    <td class="genmed" width="60%">${email}</td>
+                </tr>
+                <tr>
+                    <td class="genmed" width="40%">
+                        <h3>${trans('new passwd')}: </h3><p>${trans('you can change your pass word here')}
+                    </td>
+                    <td class="genmed" width="60%"><input type="password" size="30" maxlength="100" name="new_pw" value=""></input></td>
+                </tr>
+                <tr>
+                    <td class="genmed" width="40%">
+                        <h3>${trans('confirm passwd')}: </h3><p>${trans('confirm when you want to change your pass word')}
+                    </td>
+                    <td class="genmed" width="60%"><input type="password" size="30" maxlength="100" name="cfm_pw" value=""></input></td>
+                </tr>
+                <tr>
+                    <th colspan="2">${trans('confirm change')}</th>
+                </tr>
+                <tr>
+                    <td class="genmed" width="40%">
+                        <h3>${trans('old passwd')}: </h3><p>${trans('needed only when changing passwd')}
+                    </td>
+                    <td class="genmed" width="60%"><input type="password" size="30" maxlength="100" name="old_pw" value=""></input></td>
+                </tr>
+                <tr>
+                    <td class="genmed" id="row3" colspan="2" align="center">
+                        <input type="button" onclick="submit_settings()" name="submit1" value="${trans('submit')}"></input>
+                    </td>
+                </tr>
+                % if info:
+                    <tr>
+                        <td class="genmed" colspan="2" id="row4">
+                            ${' '.join([ trans(i) for i in info ])}
+                        </td>
+                    </tr>
+                % endif
+            </table>
+        </form>
+    </body>
+</html>

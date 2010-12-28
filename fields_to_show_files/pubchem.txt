@@ -1,0 +1,44 @@
+# keys_from_the_def_file:comments (when not given, the program will find one in the def file)
+# part fields (will be shown in the abstract mode)
+DATA_MOL_ID:Molecular ID
+MOL_2D_STRUC:2D structure of the molecule
+PUBCHEM_MOLECULAR_FORMULA:Molecular formula
+PUBCHEM_MOLECULAR_WEIGHT:Molecular weight
+PUBCHEM_IUPAC_SYSTEMATIC_NAME:IUPAC systematic name
+#==============full fields( this line must start with #=, will be shown in detailed mode )=======================
+DATA_MOL_ID:Molecular ID
+SUBMITER_ID:Submiter ID
+PUBCHEM_ATOM_DEF_STEREO_COUNT:Atom def stereo count
+PUBCHEM_ATOM_UDEF_STEREO_COUNT:Atom udef stereo count
+PUBCHEM_BOND_DEF_STEREO_COUNT:Bond def stereo count
+PUBCHEM_BOND_UDEF_STEREO_COUNT:Bond udef stereo count
+PUBCHEM_CACTVS_COMPLEXITY:Cactvs complexity
+PUBCHEM_CACTVS_HBOND_ACCEPTOR:Cactvs H bond acceptor
+PUBCHEM_CACTVS_HBOND_DONOR:Cactvs H bond donor
+PUBCHEM_CACTVS_ROTATABLE_BOND:Cactvs rotatable bond
+PUBCHEM_CACTVS_TAUTO_COUNT:Cactvs tauto count
+PUBCHEM_CACTVS_TPSA:Cactvs tpsa
+PUBCHEM_COORDINATE_TYPE:Coordinate type
+PUBCHEM_EXACT_MASS:Exact mass
+PUBCHEM_HEAVY_ATOM_COUNT:Heavy atom count
+PUBCHEM_ISOTOPIC_ATOM_COUNT:Isotopic atom count
+PUBCHEM_IUPAC_CAS_NAME:Iupac cas name
+PUBCHEM_IUPAC_SYSTEMATIC_NAME:Iupac systematic name
+PUBCHEM_IUPAC_TRADITIONAL_NAME:Iupac traditional name
+PUBCHEM_MOLECULAR_FORMULA:Molecular formula
+PUBCHEM_MOLECULAR_WEIGHT:Molecular weight
+PUBCHEM_MONOISOTOPIC_WEIGHT:Monoisotopic weight
+PUBCHEM_NIST_INCHI:Nist inchi
+PUBCHEM_NIST_INCHIKEY:Nist inchi key
+PUBCHEM_NONSTANDARDBOND:Nonstandard bond
+PUBCHEM_OPENEYE_CAN_SMILES:Openeye canonical SMILES
+PUBCHEM_OPENEYE_ISO_SMILES:Openeye iso SMILES
+OPENBABEL_CAN_SMILES:Openbabel canonical SMILES
+MD5_OPENBABEL_CAN_SMILES: MD5 openbabel canonical SMILES
+PUBCHEM_TOTAL_CHARGE:Total charge
+PUBCHEM_XLOGP3:Xlogp3
+PUBCHEM_XLOGP3_AA:Xlogp3 aa
+NUM_ATOMS:Total atoms
+NUM_BONDS:Total bonds
+NUM_RINGS:Total rings
+MOL_2D_STRUC:2D structure of the molecule

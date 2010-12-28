@@ -1,0 +1,65 @@
+<%
+search_results = results_dic['result_list']
+query_mol_struc = results_dic['search_mol']
+urls = results_dic['urls_dic']
+query = results_dic['adv_search_query']
+db = results_dic['last_db']
+last_query_id = results_dic['last_query_id']
+query_id = results_dic['query_id']
+max_results_num = results_dic['max_results_num']
+mols_dic = results_dic['query_mols_dic']
+simi_value = results_dic['min_simi']
+mode = results_dic['results_search_type']
+trans = results_dic['trans_class'].trans
+%>
+% if query_id:
+        <div id="lastquery" width="100%" style="display: none;">
+            <table width="100%" style="text-align:left; table-layout: fixed; border: 1px solid gray;" cellspacing="0">
+                <tr>
+                    <th colspan="10">
+                        ${trans('last query')}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="10"><h3>
+                        ${trans('max results num')}: ${max_results_num} |
+                        % if mode == '1':
+                            ${trans('full match')}
+                        % elif mode == '2':
+                            ${trans('sub search')}
+                        % elif mode == '3':
+                            ${trans('simi search')}: ${trans('similarity')} >= ${simi_value}
+                        % elif mode == '4':
+                            &nbsp;${trans('query')}: ${query}
+                        % elif mode == '5':
+                            ${trans('sup search')}
+                        % endif
+                        % if last_query_id and db:
+                            &nbsp;|&nbsp;${trans('search in results')}: <a href="${urls['search_url']}?page=1&db=${db}&query_id=${last_query_id}">${trans('last results')}</a>
+                        % endif
+                    </h3></td>
+                </tr>
+                % if mode == '4' and mols_dic:
+                    <tr>
+                        <%
+                        mkeys = mols_dic.keys()
+                        mkeys.sort()
+                        %>
+                        % for k in mkeys:
+                            <td width="10%">
+                                <div class='JSDraw' style="width:120px;height:120px;" viewonly molfile='${mols_dic[k].replace('\\r\\n', '\n')}'></div>
+                                <span>${trans('mol mark')}: ${k}</span>
+                            </td>
+                        % endfor
+                    </tr>
+                % elif query_mol_struc:
+                    <tr>
+                        <td width="10%">
+                            <div class='JSDraw' style="width:120px;height:120px;" viewonly molfile='${query_mol_struc}'></div>
+                            <span>${trans('query mol')}</span>
+                        </td>
+                    </tr>
+                % endif
+            </table>
+        </div>
+% endif
