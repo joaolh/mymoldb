@@ -1,0 +1,138 @@
+<%
+search_results = results_dic['result_list']
+urls = results_dic['urls_dic']
+pri_and_struc_fields = results_dic['pri_and_struc_fields']
+part_fields = results_dic['part_fields']
+search_url = urls['search_url']
+total_results = results_dic['len_results']
+max_results_num = results_dic['max_results_num']
+query_id = results_dic['query_id']
+time_consumed = results_dic['time_consumed']
+pages = results_dic['pages']
+page = results_dic['page']
+trans = results_dic['trans_class'].trans
+db = results_dic['db']
+table_heads = results_dic['table_heads']
+results_search_type = results_dic['results_search_type']
+len_results = len(search_results)
+struc_field = pri_and_struc_fields['struc_field']
+pri_field = pri_and_struc_fields['pri_field']
+%>
+<%def name="tr(values)">
+    <tr>
+    % for i in part_fields:
+        % if i == struc_field:
+        <td><div class='JSDraw' viewonly id="result" dataformat='molfile' data='${values[i]}'></div></td>
+        % else:
+            % if values[i]:
+        <td id="results">${values[i]}</td>
+            % else:
+        <td>&nbsp;</td>
+            % endif
+        % endif
+    % endfor
+        <td id="results"><a href="${urls['molinfo_url']}?db=${db}&mol_id=${values[pri_field]}" target="_blank">${trans('click me')}</a></td>
+    </tr>\
+</%def>
+        <script language="javascript">
+            function send(event){
+                if(event.keyCode==13) {
+                    window.location='${search_url}?page='+document.getElementById('jump_to').value;
+                }
+            }
+            function showlastquery(){
+                var div = document.getElementById('lastquery');
+                var sw_btn = document.getElementById('lq_switch')
+                if (div.style.display != 'none') {
+                    div.style.display = 'none';
+                    sw_btn.value = "${trans('show last query')}"
+                } else {
+                    div.style.display = '';
+                    sw_btn.value = "${trans('hide last query')}"
+                }
+            }
+        </script>
+        <br/>
+        <div id="wrapcentre">
+            <table width="100%" style="text-align: center; table-layout: fixed; border: 1px solid gray" cellspacing="0">
+            % if query_id:
+                <tr>
+                    <th align="left">
+                        <input id='lq_switch' type="button" onclick="showlastquery();" value="${trans('show last query')}"></input>
+                    </th>
+                    <th align="right" colspan="${len(table_heads)}">
+                        ${trans('search type')}: 
+                        % if results_search_type == '1':
+                            ${trans('full match')}
+                        % elif results_search_type == '2':
+                            ${trans('sub search')}
+                        % elif results_search_type == '3':
+                            ${trans('simi search')}
+                        % elif results_search_type == '4':
+                            ${trans('advanced search')}
+                        % elif results_search_type == '5':
+                            ${trans('sup search')}
+                        % endif
+                    </th>
+                </tr>
+                % if not search_results:
+                    <tr>
+                        <td id="row1">
+                            <h2>${trans('no result')}</h2>
+                        </td>
+                    </tr>
+                % else:
+                    <tr>
+                        <td align="left" colspan="${len(table_heads)+1}" id="row1">
+                            % if total_results >= max_results_num:
+                                <h3>${trans('search results')}: ${total_results} (${trans('extra results were cut off')}).</h3>
+                            % elif total_results < max_results_num:
+                                <h3>${trans('search results')}: ${total_results}.</h3>
+                            % endif
+                            <h3>${trans('time consumed')}: ${time_consumed} s</h3>
+                            <h3>${trans('current page shows')}: ${len_results}</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="row3" align="left">
+                            ${trans('total pages')}: ${pages}&nbsp;&nbsp;${trans('current page')}: ${page}
+                        </td>
+                        <%
+                        prev = ( lambda x: x <= 1 and 1 or x -1 ) (page)
+                        next = ( lambda x, y: x >= y and y or x + 1 ) (page, pages)
+                        to = ( lambda x, y: x >= y and y or x + 1 ) (next, pages)
+                        %>
+                        <td id="row3" colspan="${len(table_heads)}" align="right">
+                            <a style="align:center" href="${search_url}?page=${prev}&db=${db}&query_id=${query_id}">${trans('previous')}</a>
+                            <a style="align:center" href="${search_url}?page=${next}&db=${db}&query_id=${query_id}">${trans('next')}</a>
+                            <input id="jump_btn" type="button" value="${trans('jump to')}"  onclick="javascript:window.location='${search_url}?page=' + document.getElementById('jump_to').value + '&db=${db}&query_id=${query_id}'">
+                            <input id="jump_to" type="text" style="width:50px;" value="${to}" onkeypress="send(event)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" width="100%">
+                            ${'\n'.join(['<tr>'] + ['<th id="display">' + trans(h) + '</th>' for h in table_heads + ['more']] + ['</tr>'])}
+                            ${''.join([tr(d) for d in search_results])}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="row3" align="left">
+                            ${trans('total pages')}: ${pages}&nbsp;&nbsp;${trans('current page')}: ${page}
+                        </td>
+                        <td id="row3" colspan="${len(table_heads)}" align="right">
+                            <a style="align:center" href="${search_url}?page=${prev}&db=${db}&query_id=${query_id}">${trans('previous')}</a>
+                            <a style="align:center" href="${search_url}?page=${next}&db=${db}&query_id=${query_id}">${trans('next')}</a>
+                            <input id="jump_btn" type="button" value="${trans('jump to')}"  onclick="javascript:window.location='${search_url}?page=' + document.getElementById('jump_to').value + '&db=${db}&query_id=${query_id}'">
+                            <input id="jump_to" type="text" style="width:50px;" value="${to}" onkeypress="send(event)">
+                        </td>
+                    </tr>
+                % endif
+            % else:
+                <tr>
+                    <td id="row1">
+                        <h2>${trans('not yet searched')}</h2>
+                    </td>
+                </tr>
+            % endif
+            </table>
+        </div>

@@ -1,0 +1,25 @@
+<%
+info_head = results_dic['info_head']
+info = results_dic['info']
+trans = results_dic['trans_class'].trans
+%>
+        % if info:
+            <div id="wrapcentre" style="height: 500px;">
+        % else:
+            <div id="wrapcentre">
+        % endif
+            <table style="border: 0; align: center; width: 100%;" cellspacing="0">
+                % if info_head:
+                    <tr>
+                        <th>${trans(info_head)}</th>
+                    </tr>
+                % endif
+                % if info:
+                    <tr>
+                        <td id="row1">
+                            ${' '.join([ trans(i) for i in info ])}
+                        </td>
+                    </tr>
+                % endif
+            </table>
+        </div>

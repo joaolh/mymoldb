@@ -1,0 +1,106 @@
+<%
+trans = results_dic['trans_class'].trans
+urls = results_dic['urls_dic']
+approved_users = results_dic['approved_users']
+unapproved_users = results_dic['unapproved_users']
+info = results_dic['info']
+groups = results_dic['groups']
+%>
+<%def name="tr(values)">
+    <tr>
+        <%
+        id, group, username, nick, status = values
+        %>
+        ## '-1' means still not approved, '0' means inactive while '1' means active
+        % if status == '-1':
+        <td align="center"><a href="javascript:;" onclick="confirm_change('approve_id', '${id}', '${status}')">${trans('approve')}</a></td>
+            <%
+            id = trans('unknown')
+            %>
+        % elif status == '0':
+        <td align="center"><a href="javascript:;" onclick="confirm_change('active_id', '${id}', '${status}')">${trans('active')}</a>&nbsp;|
+            <a href="javascript:;" onclick="confirm_change('remove_id', '${id}', '${status}')">${trans('remove')}</a>
+        </td>
+        % elif status == '1':
+        <td align="center"><a href="javascript:;" onclick="confirm_change('deactive_id', '${id}', '${status}')">${trans('deactive')}</a>&nbsp;|
+            <a href="javascript:;" onclick="confirm_change('remove_id', '${id}', '${status}')">${trans('remove')}</a>&nbsp;|
+            <a href="javascript:;" onclick="confirm_change('chgroup_id', '${id}', '${status}')">${trans('change group')}</a>
+        </td>
+        % endif
+        <td align="center">${id}</td>
+        <td align="center">${group}</td>
+        <td align="center">${username}</td>
+        <td align="center">${nick}</td>
+        <td align="center">${trans('status ' + status)}</td>
+    </tr>\
+</%def>
+<%def name="th(table_heads, explains)">
+    % if table_heads:
+        <%
+        span = 6/len(table_heads)
+        %>
+    <tr>
+            % for hd in table_heads:
+        <th id="row4" colspan="${span}">${trans(hd)}</th>
+            % endfor
+    </tr>\
+    % endif
+    % if explains:
+        <%
+        span = 6/len(explains)
+        %>
+    <tr>
+            % for e in explains:
+        <th id="row3" colspan="${span}">${trans(e)}</th>
+            % endfor
+    </tr>\
+    % endif
+</%def>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="${urls['css_dir']}/style.css" />
+        <script language="javascript">
+            function confirm_change(type, id, stat) {
+                if (!/^[0-9]+$$/.exec(id) && stat != '-1') {
+                    alert("${trans('should be integer')}");
+                    return;
+                } else {
+                    if (type == 'chgroup_id') {
+                        var group = prompt("${trans('input a group number here: ')}", "${trans('should choose in')}" + " ${groups}");
+                        if (!/^[0-9]+$$/.exec(group)) {
+                            alert("${trans('should be integer')}"); return;
+                        } else {
+                            if (confirm('${trans("sure to do this")}')) {
+                                window.location.href = "${urls['manusers_url']}?chgroup_id=" + id + "&group=" + group;
+                            }
+                        }
+                    } else {
+                        if (confirm('${trans("sure to do this")}')) {
+                            window.location.href = "${urls['manusers_url']}?" + type + "=" + id;
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body style="margin: 0;">
+        <table style="table-layout: auto;" width="100%" align="center" cellpadding="0">
+            % if approved_users:
+                ${th(['approved users'], ['actions', 'id', 'user group', 'user name', 'nick', 'status'])}
+                ${''.join([tr(d) for d in approved_users])}
+            % endif
+            % if unapproved_users:
+                ${th([], ['unapproved users'])}
+                ${''.join([tr(d) for d in unapproved_users])}
+            % endif
+        </table>
+        % if info:
+            <table width="100%"><tr>
+                <td id="row3">
+                    ${' '.join([ trans(i) for i in info ])}
+                </td>
+            </tr></table>
+        % endif
+    </body>
+</html>

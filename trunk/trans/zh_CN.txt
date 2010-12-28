@@ -1,0 +1,183 @@
+2D structure of the molecule:分子结构
+about:关于
+actions:动作
+active:激活
+add mol:新增分子
+advanced mode:&nbsp;高级模式
+advanced search:高级检索
+approved users:合法用户
+approve:批准
+approve user:批准用户
+at least one admin is needed:至少需要一个管理员
+begin search:开始检索
+blog:博客
+both new passwd and confirm passwd are needed:须输入新密码并确认一次
+can not edit mol:无权编辑此分子
+change group:更改组
+change nick name:更改昵称
+change settings:更改设置
+check your query:检索出错，请检查你的检索条件！
+chinese:中文
+choose database:选择数据库
+clear:清空
+click me:点我
+click to show details of:点击查看详情有关分子
+completed:完成
+confirm change:确认更改
+confirm passwd:确认密码
+confirm when you want to change your pass word:欲更改密码时须在此确认
+confirm your pass word:确认密码
+contains illegal words:包含非法关键字
+copy right:版权所有 © 2010-2012 xiooli &lt;xioooli[at]yahoo.com.cn&gt;<br/>为获得更好浏览体验，请使用 Google chrome 或 Firefox 访问。
+copy to buffer:复制到缓冲区
+current mol:当前分子
+current page shows:当前页显示
+current page:当前页
+deactive:失活
+del failed:删除分子失败
+del mol failed:删除下列分子失败（您可能没有删除它们的权限）
+del mol:删除分子
+descriptions:描述
+documents:文档
+document:文档
+double click cell to edit:双击编辑
+edit mol finished:编辑分子完成
+edit:编辑
+email is used as login name here:邮件地址作为登录用户名使用
+email:邮件地址
+empty mol entry:下列分子不存在：
+empty pass word entry:密码不能为空！
+empty user name entry:用户名不能为空！
+english:英文
+extra results were cut off:超过最大值的结果已被裁减
+failed:失败
+failed to get user info:获取用户信息失败
+failed to open document:打开文件失败
+full match:精确检索
+get mol:获取&nbsp;Mol&nbsp;文件
+get smiles:获取&nbsp;Smiles&nbsp;表达式
+help:帮助
+hide calculables:隐藏选填项
+hide last query:隐藏上次检索内容
+home:首页
+id:ID
+info not completed:信息不完全
+info:信息：
+input a group number here:在此输入一个组号
+input mol id here:在此输入分子 ID
+input query:输入检索语句
+input your query here:--- 在此输入检索语句 ---
+it:它
+IUPAC systematic name:IUPAC&nbsp;名
+jump to:跳转至
+language:语言
+last query:上次检索内容
+last results:上次结果
+length of nick should between 2 and 20:昵称长度在 2-20 个字符内
+login:登录
+logout:登出
+max results num:最大结果数
+Molecular formula:分子式
+Molecular ID:分子&nbsp;ID
+Molecular weight:分子量
+molecule buffer:分子缓冲区
+mol editor:分子结构编辑器
+mol id not post:未提交分子 ID
+mol id:分子 ID
+mol info:分子详情
+mol mark:分子编号
+mol structure:分子结构
+more about mol:分子详情:
+more info:详细信息
+more:更多...
+mymols:我的分子
+name of db 1:Pubchem
+name of db 2:Cibmoldb
+needed entries:须填项（不能由计算得出）
+needed entry imcomplete:必须项未填写
+needed entry:必须项
+needed only when changing passwd:欲更改密码时需要在此输入原密码
+new mol:新增分子
+new passwd and confirm passwd are not equal:新密码和确认密码不相同
+new passwd:新的密码
+next:下一页
+nick length not fit:昵称长度不合格
+nick:昵称
+no empty cells left:缓冲区已满！
+no molecular structure to search:未绘制分子，无法检索。
+no mol to show:无该分子信息
+no mol:未绘制分子
+no query to search:未输入检索语句！
+no result:无检索结果
+not yet searched:尚未检索
+normal mode:&nbsp;普通模式
+normal search:普通检索
+no such user:此用户不存在
+nothing to change:未发生任何改变
+not valid user name:不是有效用户名
+old passwd is needed when changing passwd:更改密码时要求输入原密码
+old passwd:旧的密码
+old pass word is neededed:需要输入原密码
+options:选项
+pass word incorrect:密码错误，请重试。
+pass word not well confirmed:确认密码错误
+pass word:密 码
+permission denied:权限不足
+please waiting for been approved:请等待批准
+previous:上一页
+query and mode not match:检索条件与检索模式不匹配
+query err:检索出错！
+query imcomplete:检索条件不完全！
+query mol structure:分子结构
+query mol:所检索的分子
+query:检索语句
+records:条记录
+register finished:注册完成
+register:注册
+remove:删除
+search in results:在结果中检索
+search mode:检索模式
+search results:检索结果
+search site:检索网站
+search type:检索类型
+search:检索
+similarity:相似度
+simi search:相似检索
+simi value:相似度
+settings updated successfully:设置已成功更新
+should be integer:须为整数
+should choose in:可选项：
+show calculables:显示选填项
+show last query:显示上次检索内容
+status 0:失效
+status 1:活跃
+status -1:未批准
+status:状态
+submiter:提交者
+submit:提交
+sub search:子结构检索
+sup search:超结构检索
+successed:成功
+sure del mol:你确定要删除此分子吗？
+sure to do this:你确定要继续执行吗？
+there is already another same molecule in buffer:缓冲区中已有相同分子！
+time consumed:消耗时间
+total pages:总页数
+to:到
+unapproved users:待批准用户
+user already registered:此用户名已被占用
+user control panel:用户控制面板
+user group:用户组
+user had been deactived:用户已经失效
+user management:用户管理
+user name:用户名
+user not valid:不是有效用户，请先注册。
+user:用户
+values:赋值
+welcome here:&nbsp;&nbsp;欢迎来到&nbsp;MYMOLDB
+wrong db name:数据库名称错误 （你可能没有访问权限）
+wrong old pass word:原密码错误
+you can change your pass word here:这里你可以更改密码
+you can not:你不能
+you hava already submited your info:你已经提交过一次信息了
+you have no permission to access here:你没有访问本地址的权限！

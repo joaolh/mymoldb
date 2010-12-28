@@ -1,0 +1,152 @@
+<%
+logged_user = results_dic['logged_user']
+urls = results_dic['urls_dic']
+mol = results_dic['mol']
+dbs = results_dic['dbs']
+db = results_dic['db']
+info = results_dic['info']
+nick = results_dic['submiter_nick']
+mol_id = results_dic['mol_id']
+trans = results_dic['trans_class'].trans
+show_del = results_dic['show_del']
+needed_tuple = results_dic['needed_tuple']
+db_selected = results_dic['db_selected']
+%>
+<%def name="tr(values)">
+    <tr>
+    % for i in (0, 1):
+        % if len(values) == 3:
+            <%
+            value = values[2]
+            %>
+        % else:
+            <%
+            value = ''
+            %>
+        % endif
+        % if i == 0:
+        <td width="35%">${values[i]}</td>
+        % else:
+        <td width="65%"><input type="text" size="100%" class="infoeditor" name="${values[i]}" value="${value}"</input></td>
+        % endif
+    % endfor
+    </tr>\
+</%def>
+    <script type="text/javascript" src="${urls['js_dir']}/dojo.xd.js"></script>
+    <script type="text/javascript" src="${urls['js_dir']}/Chemene.JSDraw.js"></script>
+    <script type="text/javascript">JSDraw.init();</script>
+    <script language="javascript">
+        function edit_mol() {
+            var new_mol_id = document.getElementById('mol_id').value;
+            var db_slct = document.getElementById('dbchoose');
+            var reg = /^[0-9]+$$/;
+            if ( reg.exec(new_mol_id) ) {
+                window.location = "${urls['editmol_url']}?mol_id=" + new_mol_id + '&db=' + db_slct.options[db_slct.selectedIndex].value;
+            } else {
+                alert("${trans('contains illegal words')}");
+            }
+        }
+        function del_mol() {
+            if (confirm("${trans('sure del mol')}")) {
+                var mol_id = document.getElementById('mol_id').value;
+                window.location = '${urls['delmol_url']}?mol_id=${mol_id}&db=${db}';
+            }
+        }
+        function chdb(db) {
+            url = "${urls['chdb_url']}?db=" + db + "&sid=" + Math.random();
+            get_url(url);
+            window.location = '${urls['editmol_url']}?mol_id=${mol_id}&db=' + db;
+        }
+        function reset_text() {
+            var text = "${trans('input mol id here')}";
+            var mol_id_input = document.getElementById('mol_id');
+            if (!mol_id_input.value) {
+                mol_id_input.value = text;
+                } else if (mol_id_input.value == text) {
+                mol_id_input.value = '';
+            }
+        }
+        function submit_info() {
+            var smiles = JSDraw.get("moleditor").getSmiles();
+            if (smiles) {
+                var mol = JSDraw.get("moleditor").getMolfile();
+                document.form1.SMILES.value = smiles;
+                document.form1.MOL_2D_STRUC.value = mol;
+                document.form1.submit();
+            } else {
+                alert("${trans('needed entry imcomplete')}");
+            }
+        }
+    </script>
+    <table width="100%" cellpadding="0" id="top_info">
+        <tr>
+            <td align="left">
+                <span>${trans('choose database')}</span>
+                <select id="dbchoose" onchange="chdb(this.options[this.selectedIndex].value)">
+                    % for d in dbs:
+                        <%
+                        txt = 'name of db ' + d
+                        %>
+                        <option value="${d}" ${db_selected(d)}>${trans(txt)}</option>
+                    % endfor
+                </select>
+                <span>&nbsp;| ${trans('mol id')}</span>
+                <input type="text" id="mol_id" onclick="reset_text();" onblur="reset_text();" value="${trans('input mol id here')}"></input>
+                <input type="button" onclick="edit_mol()" value="${trans('edit')}"></input>
+                <span>&nbsp;|</span>
+                <input type="button" onclick="javascript:window.location='${urls['editmol_url']}'" value="${trans('add mol')}"></input>
+                % if show_del:
+                    <span>&nbsp;|</span>
+                    <input type="button" onclick="del_mol()" value="${trans('del mol')}"></input>
+                % endif
+            </td>
+            <td align="right">
+                % if info:
+                    ${' '.join([ trans(i) for i in info ])}
+                    <span>&nbsp;|</span>
+                % endif
+                % if nick:
+                    <span>${trans('submiter')}: ${nick}&nbsp;|</span>
+                % endif
+                % if mol_id:
+                    <span>${trans('current mol')}: <a href="${urls['molinfo_url']}?mol_id=${mol_id}&db=${db}">${mol_id}</a></span>
+                % else:
+                    <span>${trans('current mol')}: ${trans('new mol')}</span>
+                % endif
+            </td>
+        <tr>
+    </table>
+    <form name="form1" action="${urls['editmol_url']}" method="post">
+        <fieldset>
+            <legend>${trans('needed entries')}</legend>
+            <table id="editor" width="70%">
+                <tr>
+                    <th>${trans('mol structure')} (${trans('needed entry')})</th>
+                </tr>
+                <tr>
+                    <td>
+                        <div class='JSDraw' id="moleditor" molfile="${mol}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <input type="button" onclick="alert(JSDraw.get("moleditor").getMolfile())" value="${trans('get mol')}"></input>
+                        <input type="button" onclick="alert(JSDraw.get("moleditor").getSmiles())" value="${trans('get smiles')}"></input>
+                    </td>
+                </tr>
+            </table>
+                <table id="prop_entries" width="100%">
+                    <tr>
+                        ${'\n'.join(['<th>' + trans(h) + '</th>' for h in ['descriptions', 'values']])}
+                    </tr>
+                    ${''.join([tr(d) for d in needed_tuple])}
+                </table>
+            <div id="row4" align="center">
+                <input type="button" onclick="submit_info()" value="${trans('submit')}"></input>
+            </div>
+        </fieldset>
+        <input type="hidden" name="mol_id" value="${mol_id}"></input>
+        <input type="hidden" name="db" value="${db}"></input>
+        <input type="hidden" name="SMILES" value=""></input>
+        <input type="hidden" name="MOL_2D_STRUC" value=""></input>
+    </form>

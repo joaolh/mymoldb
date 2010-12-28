@@ -1,0 +1,80 @@
+<%
+trans = results_dic['trans_class'].trans
+urls = results_dic['urls_dic']
+info = results_dic['info']
+%>
+        <script language="javascript">
+            function SendMessage(){
+                var form = document.getElementById('register_form');
+                if (form.username.value=="") {
+                    alert("${trans('empty user name entry')}");
+                    return
+                } else if(form.nick.value=="") {
+                    alert("${trans('empty nick entry')}");
+                    return
+                }
+                if(form.passwd.value=="" || form.cfm_pw.value=="") {
+                    alert("${trans('empty pass word entry')}");
+                    return
+                } else if (form.passwd.value != form.cfm_pw.value) {
+                    alert("${trans('pass word not well confirmed')}");
+                    return
+                }
+                    form.submit();
+            }
+        </script>
+        <form action="${urls['register_url']}" id="register_form" method="post">
+            <table cellspacing="0" width="100%" align="center">
+                <tr>
+                    <th colspan="2">${trans('register')}</th>
+                </tr>
+                <tr><td>
+                    <table width="60%" align="center">
+                        % if info:
+                            <tr>
+                                <td colspan="2">
+                                    ${' '.join([ trans(i) for i in info ])}
+                                </td>
+                            </tr>
+                        % endif
+                        <tr>
+                            <td width="40%" align="left">
+                                <b>${trans('user name')}:</b><p>${trans('email is used as login name here')}
+                            </td>
+                            <td width="60%" align="left">
+                                <input class="post" type="text" name="username" value="" tabindex="1" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="40%" align="left">
+                                <b>${trans('nick')}:</b><p>${trans('length of nick should between 2 and 20')}
+                            </td>
+                            <td width="60%" align="left">
+                                <input class="post" type="text" name="nick" value="" tabindex="2" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="40%" align="left">
+                                <b>${trans('pass word')}:</b><p>&nbsp;
+                            </td>
+                            <td width="60%" align="left">
+                                <input class="post" type="password" name="passwd" value="" tabindex="2" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="40%" align="left">
+                                <b>${trans('confirm passwd')}:</b><p>${trans('confirm your pass word')}
+                            </td>
+                            <td width="60%" align="left">
+                                <input class="post" type="password" name="cfm_pw" value="" tabindex="2" />
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+                <tr>
+                    <td colspan="2" id="row4" align="center">
+                        <input type="button" size="50" name="button" onclick="SendMessage();" value="${trans('register')}">
+                    </td>
+                </tr>
+            </table>
+        </form>

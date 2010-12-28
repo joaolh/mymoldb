@@ -1,0 +1,50 @@
+<%
+trans = results_dic['trans_class'].trans
+ref = results_dic['ref']
+urls = results_dic['urls_dic']
+info = results_dic['info']
+%>
+        <script language="javascript">
+            function SendMessage(){
+                var form = document.getElementById('login_form');
+                if (form.username.value=="") {
+                    alert("${trans('empty user name entry')}");
+                } else if(form.password.value=="") {
+                    alert("${trans('empty pass word entry')}");
+                } else {
+                    form.submit();
+                }
+            }
+        </script>
+        <form action="${urls['login_url']}" id="login_form" method="post">
+            <table cellspacing="0" width="100%" align="center">
+                <tr>
+                    <th colspan="2">${trans('login')}</th>
+                </tr>
+                % if info:
+                    <tr>
+                        <td id="row4" colspan="2">
+                            ${' '.join([ trans(i) for i in info ])}
+                        </td>
+                    </tr>
+                % endif
+                <tr>
+                    <td width="50%" align="right" id="row3"><b>${trans('user name')}:</b></td>
+                    <td width="50%" align="left" id="row3">
+                        <input class="post" type="text" name="username" value="" tabindex="1" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="50%" align="right" id="row3"><b>${trans('pass word')}:</b></td>
+                    <td width="50%" align="left" id="row3">
+                        <input class="post" type="password" name="password" value="" tabindex="2" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="row4" align="center">
+                        <input type="button" size="50" name="button" onclick="SendMessage();" value="${trans('login')}">
+                    </td>
+                </tr>
+                <input type="hidden" name="ref" value="${ref}"></input>
+            </table>
+        </form>
