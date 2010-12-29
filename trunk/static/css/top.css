@@ -1,0 +1,112 @@
+#topbar {
+    top: 0;
+    position: absolute;
+    background-color: rgba(0,0,0,0.6);
+    left: 0px;
+    right: 0px;
+    font-size: large;
+    text-indent: 0px;
+    color: #fff;
+    height: 19px;
+}
+
+#topbar ul li a:hover {
+    background: #f5d7b4;
+}
+
+#topbar .words {
+    position: absolute;
+    width: 200px;
+    z-index: 5;
+}
+
+#topbar #nav {
+    position: absolute;
+    right: 0;
+    margin: 0 0 0;
+}
+
+#nav ul {
+    float: right;
+    background: none;
+    white-space: nowrap;
+    padding: 0 10px 0 0;
+}
+
+#nav li {
+    float: left;
+    background: none;
+    padding: 0 10px 0 0;
+    list-style: none;
+}
+
+#nav li a#home {
+    background-image: url(./images/top_home.png);
+}
+
+#nav li a#search {
+    background-image: url(./images/top_search.png);
+}
+
+#nav li a#blog {
+    background-image: url(./images/top_blog.png);
+}
+
+#nav li a#about {
+    background-image: url(./images/top_about.png);
+}
+
+#nav li a#login {
+    background-image: url(./images/top_login.png);
+}
+
+#nav li a#chinese {
+    background-image: url(./images/top_chinese.png);
+}
+
+#nav li a#english {
+    background-image: url(./images/top_english.png);
+}
+
+#nav li input#websearch {
+    background-image: url(./images/top_websearch.png);
+    background-position: right;
+    background-repeat: no-repeat;
+    max-height: 12px;
+    maxlength: 9px;
+    font-size: small;
+}
+
+#nav li a#home,
+#nav li a#search,
+#nav li a#blog,
+#nav li a#about,
+#nav li a#sepline,
+#nav li a#login,
+#nav li a#chinese,
+#nav li a#english {
+    background-position: right;
+    margin-right:5px;
+    background-repeat: no-repeat;
+    color: #fff;
+    padding: 0 18px 0 0;
+    text-decoration: none;
+}
+
+#nav li a:hover#home,
+#nav li a:hover#search,
+#nav li a:hover#blog,
+#nav li a:hover#about,
+#nav li a:hover#login,
+#nav li a:hover#chinese,
+#nav li a:hover#english {
+    color: #000000;
+}
+
+#home #nav a#home,
+#search #nav a#search,
+#blog #nav a#blog,
+#about #nav a#about {
+    background-color: #BB8B23;
+    color: #FFF488;
+}
