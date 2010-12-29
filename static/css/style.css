@@ -1,0 +1,436 @@
+/* Layout
+ ------------ */
+* {
+    /* Reset browsers default margin, padding and font sizes */
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 100%;
+    background-color: #fff;
+}
+
+
+body {
+    font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+    color: black;
+    line-height: 30px;
+    background-color: #fff;
+    font-size: 13px; /* This sets the default font size to be equivalent to 10px */
+    margin: 40;
+    margin-top: 0;
+}
+
+h1 {
+    color: #000;
+    font-size: 18px;
+}
+h2 {
+    color: #340000;
+    font-size: 16px;
+}
+h3 {
+    color: #58585
+    font-size: 14px;
+}
+
+.genmed {
+    margin: 5px 5px;
+    line-height: 25px;
+}
+
+/* Tables */
+th {
+    color: #d4cebf;
+    font-size: 14px;
+    font-weight: bold;
+    border: solid #e8e2d8;
+    border-width: 0px;
+    background-color: #3c3b37;
+    white-space: normal;
+    padding: 4px;
+}
+
+table {
+    text-indent: 3px;
+    margin: auto;
+    border: solid #e8e2d8;
+    border-width: 1px;
+    white-space: normal;
+    border-style: ridge;
+}
+
+td {
+    word-wrap: break-word;
+    word-break: break-all;
+    border: solid #e8e2d8;
+    border-width: 0 1px 1px 0;
+    overflow: hidden;
+}
+
+tr {
+    border: solid #e8e2d8;
+    border-width: 1px 0 1px 0;
+
+}
+
+#display {
+    border-width: 0 1px 1px 0;
+}
+
+#results {
+    text-align: center;
+}
+
+#row1 {
+    background-color: #f7f4ef;
+    padding: 4px;
+}
+
+#row2 {
+    background-color: gray;
+    padding: 4px;
+}
+
+#row3 {
+    color: #3c3b37;
+    background-color: #e8e2d8;
+    padding: 4px;
+}
+
+#row4 {
+    background-color: #998b75;
+    padding: 4px;
+}
+
+.code {
+    font-size: 14px;
+    text-indent: 20px;
+    background-color: #1E1D1F;
+    color: #00FF00;
+    border: 1px solid gray;
+}
+
+fieldset {
+    padding:5px;
+    margin:10px;
+    color:#333;
+}
+
+/* for JSDraw editor/viewer */
+.JSDraw#moleditor {
+    height: 300px;
+    border: 1px solid gray;
+}
+
+.JSDraw#advmoleditor {
+    height: 330px;
+    width: 700px;
+    border: 1px solid gray;
+}
+
+.JSDraw#result {
+    width: 195px;
+    height: 195px;
+}
+
+.JSDraw#infomolview {
+    width: 600px;
+    height: 500px;
+    border: 0px;
+}
+
+/* wraps */
+#wrapheader {
+    min-height: 80px;
+    height: auto !important;
+    height: 120px;
+    padding: 0;
+}
+
+#wrapcentre, #lastquery {
+    text-align: center;
+    align: center;
+    margin: 0 auto;
+    padding: 0;
+}
+
+#wrapnormal {
+    height: 500px;
+    text-align: left;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+#wrapfooter {
+    background-color: #d4cebf;
+    text-align: center;
+    clear: both;
+}
+
+#wrapnav {
+    width: 100%;
+    margin: 0;
+    background-color: #ECECEC;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #A9B8C2;
+}
+
+#logodesc {
+    margin-bottom: 0px;
+    padding: 5px 25px;
+    background: #f0ebe2;
+    border-bottom: 0px solid #9f4c09;
+}
+
+#menubar, #top_info {
+    margin-bottom: 40px;
+    background-color: #e8e2d8
+}
+
+#datebar {
+    margin: 0px 25px 0 25px;
+}
+
+#findbar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+hr {
+    height: 2px;
+    border-width: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color: #D1D7DC;
+    color: #D1D7DC;
+}
+
+.legend {
+    text-align:center;
+    margin: 0 auto;
+}
+
+/* Links
+ ------------ */
+a:link {
+    color: #9f4c09;
+    text-decoration: none;
+}
+
+a:active,
+a:visited {
+    color: #9f4c09;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #9f4c09;
+    text-decoration: underline;
+}
+
+a.forumlink {
+    color: #9f4c09;
+    font-weight: bold;
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a.topictitle {
+    margin: 1px 0;
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+a.topictitle:visited {
+    color: #9f4c09;
+    text-decoration: none;
+}
+
+th a,
+th a:visited {
+    color: #FFA34F !important;
+    text-decoration: none;
+}
+
+th a:hover {
+    text-decoration: underline;
+}
+
+
+/* Form Elements
+ ------------ */
+form {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+input {
+    color: #333333;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    font-family: "Lucida Grande", Verdana, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    padding: 1px;
+    border: 1px solid #A9B8C2;
+    background-color: #fafafa;
+}
+
+textarea {
+    background-color: #FAFAFA;
+    color: #333333;
+    font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 140%;
+    font-weight: normal;
+    border: 1px solid #A9B8C2;
+    padding: 2px;
+}
+
+select {
+    color: #333333;
+    background-color: #FAFAFA;
+    font-family: "Lucida Grande", Verdana, Helvetica, sans-serif;
+    font-size: 1em;
+    font-weight: normal;
+    border: 1px solid #A9B8C2;
+    padding: 1px;
+}
+
+option {
+    padding: 0 1em 0 0;
+}
+
+option.disabled-option {
+    color: gray;
+}
+
+.rtl option {
+    padding: 0 0 0 1em;
+}
+
+input.radio {
+    border: none;
+    background-color: transparent;
+}
+
+/* Misc
+ ------------ */
+img {
+    border: none;
+}
+
+.sep {
+    color: black;
+    background-color: #FFA34F;
+}
+
+pre {
+    white-space:　pre-wrap;
+    word-wrap:　break-word;
+    font-size: 1.1em;
+    font-family: Monaco, 'Courier New', monospace;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+/* nav1 */
+#topwrapper {
+    background-color: #4D3C3C;
+}
+
+#tophead
+{
+    position:relative;
+    background: url('/images/header-image2.png') no-repeat transparent;
+    border-style: solid;
+    border-width: 0;
+    margin: 0;
+    color: #000000;
+    height: 70px;
+}
+
+#masthead h1
+{
+/*    //display: none; */        /* we'll show an image instead */
+    text-indent:-10000px;
+    margin:0;
+}
+
+#nav1
+{
+    position: absolute;
+    margin-right: 40;
+    top: 26px;
+    bottom: 0px;
+    right: 10px;
+    font: normal 12px Verdana, Arial, Helvetica, sans-serif;
+    font-color: #E18126;
+}
+
+#nav1 ul
+{
+    margin:0;
+    padding:10px 10px 0 20px;
+    list-style:none;
+}
+
+#nav1 li
+{
+    float:left;
+    margin:0;
+    padding:0 0 0 5px;
+}
+
+#nav1 a
+{
+    float:left;
+    font-size: 1em;
+    display:block;
+    background-color: #d4cebf;
+    padding:10px 15px 4px 8px;
+    text-decoration:none;
+    font-weight:bold;
+    color:#a18126;
+}
+
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#nav1 a {float:none;}
+/* End IE5-Mac hack */
+#nav1 a:hover {
+    color:#333;
+}
+
+#nav1 li:hover, #nav1 li:hover a
+{
+    background-position:0% -163px;
+    color:#000;
+}
+
+#nav1 li:hover a
+{
+    background-position:100% -163px;
+    color:#000;
+}
+
+#nav1 #current a
+{
+    padding-bottom:4px;
+    background-color: #fff;
+    color:#000;
+}
+
+#m1, #m2, #m3, #m4, #m5, #m6, #m7, #m8, #m9 {
+    border:1px solid gray;
+    table-layout: fixed;
+    width: 130px;
+    height: 100px;
+}
