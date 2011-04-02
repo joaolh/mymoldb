@@ -1,6 +1,0 @@
-#labels pictures
-= MyMolDB overview =
-
-Here are some pictures of MyMolDB running on the server of our lab:
-
-[http://farm5.static.flickr.com/4082/4859819658_1eff8e3355_b.jpg]
