@@ -244,7 +244,7 @@ class login:
             } )
     def GET(self, name = ''):
         results_dic = self.results_dic
-        ref = '/'
+        ref = URLS_DIC['home_url']
         input = web.input()
         if input.has_key('ref') and input.get('ref'):
             if  input.get('ref') != web.ctx.path:
@@ -276,7 +276,7 @@ class login:
         env_db = ENVS[USERSDB]
         userdb_obj = lm.users_db(env_db)
         results_dic = self.results_dic
-        ref = '/'
+        ref = URLS_DIC['home_url']
 
         if input.has_key('ref') and input.get('ref'):
             ref = base64.b64decode(input.get('ref'))
@@ -1897,7 +1897,7 @@ class molinfo:
             results_dic['html_title'] = 'query err'
             return html_info(results_dic)
 
-
+class edit:
     def __init__(self):
         # set the target language to session.lang
         trans_class.lang = session.lang
