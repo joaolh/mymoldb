@@ -6,7 +6,7 @@
 # Licence:  GPLv3
 # Version:  091216
 
-import web, sys, os, hashlib, zlib, re, time, pickle, base64
+import web, sys, os, hashlib, zlib, re, time, pickle, base64, json
 from settings import *
 import libmymoldb as lm
 from libmymoldb.functions import *
@@ -38,7 +38,6 @@ tpl_results_dic = {
         'links': NAV_LINKS,
         'logged_user': None,
         'result_list': [],
-        'total_results': 0,
         'len_results': 0,
         'dbs': PUBLIC_DBS,
         'db': '1',
@@ -277,6 +276,7 @@ class login:
         env_db = ENVS[USERSDB]
         userdb_obj = lm.users_db(env_db)
         results_dic = self.results_dic
+        ref = '/'
 
         if input.has_key('ref') and input.get('ref'):
             ref = base64.b64decode(input.get('ref'))
@@ -1175,6 +1175,606 @@ class search:
             results_dic['html_title'] = 'query err'
             return html_info(results_dic)
 
+class webapi:
+    '''web api for structure search'''
+    def __init__(self):
+        # set default results to show per page
+        self.results_per_page = int(session.results_per_page)
+        # set max results number if it's not yet set
+        self.max_results_num = int(session.max_results_num)
+        # set the target language to session.lang
+        self.results_dic = tpl_results_dic.copy()
+        self.results_dic.update( {
+            'logged_user': session.nickname,
+            'max_results_num': self.max_results_num,
+            'query_id': '',
+            'part_fields': [],
+            'pri_and_struc_fields': {'pri_field': '', 'struc_field': ''},
+            'results_search_type': '2',
+            'prequery': '',
+            'info': [],
+            } )
+
+    def GET(self, name = ''):
+        input = web.input()
+        # results_mol_ids stores the mol ids found by the previous query
+        results_of_get = []
+        simi_values = []
+        results_mol_ids = []
+        results = []
+        results_dic = self.results_dic
+        search_mol = session.search_mol
+        stored_results_of_post = ''
+        stored_results_of_get = {}
+        results_mol_ids = []
+        query_info = {}
+        query_mols_dic = {}
+        adv_search_query = ''
+        search_mol = ''
+        md5_query = ''
+        available_dbs = PUBLIC_DBS
+        if session.authorized:
+            available_dbs = DATABASES
+            self.results_dic.update({'dbs': available_dbs})
+
+        # check basic permission
+        if not is_permited(session.userid, session.usergroup, ('s')):
+            return json.dumps({'status': 'Permition denied'})
+
+        try:
+            if input.has_key('db') and input.get('db'):
+                db_name = input.get('db')
+                if db_name not in available_dbs:
+                    return json.dumps({'status': 'DB not accessible!'})
+                session.db = db_name
+            else:
+                db_name = session.db
+
+            if input.has_key('prequery') and input.get('prequery'):
+                results_dic['prequery'] = input.get('prequery')
+
+            env_db = ENVS[db_name]
+            dbd_obj = dbd_objs[db_name]
+            tables = dbd_obj.tables
+            pri_field = env_db['PRI_FIELD']
+            struc_field = env_db['2D_STRUC_FIELD']
+            sql_fields_dic = env_db['FIELDS_TO_SHOW_DIC']
+            fields_to_show_list_all = sql_fields_dic['all']
+            fields_to_show_list_part = sql_fields_dic['part']
+            part_fields = fields_to_show_list_part['fields']
+            part_fields = [ re.sub(r'^[^\.]+\.', '', i) for i in part_fields ]
+            table_heads = fields_to_show_list_part['comments']
+
+            if input.has_key('query_id') and input.get('query_id'):
+                md5_query = str(input.get('query_id'))
+
+            if input.has_key('results_per_page'):
+                self.results_per_page = int(input.get('results_per_page'))
+                session.results_per_page = int(input.get('results_per_page'))
+            if input.has_key('max_results_num'):
+                self.max_results_num = int(input.get('max_results_num'))
+                session.max_results_num = int(input.get('max_results_num'))
+
+            search_type = session.search_mode
+            if input.has_key('mode') and input.get('mode'):
+                search_type = input.get('mode')
+            else:
+                search_type = session.search_mode
+
+            if input.has_key('page'):
+                # check if the results_of_get_file already exists
+                # results_of_get_file is the results from the GET method of search class
+                results_of_get_file = CACHE_PATH + '/' + md5_query + '.get'
+                if os.path.exists(results_of_get_file):
+                    if time.time() - os.path.getmtime(results_of_get_file) <= RESULTS_FILE_TIME_OUT:
+                        f = open(results_of_get_file)
+                        stored_results_of_get = pickle.load(f)
+                        query_db = stored_results_of_get['query_info']['query_db']
+                        if( not query_db in available_dbs ) or query_db != db_name:
+                            return json.dumps({'status': 'DB not accessible!'})
+                        f.close()
+                    else:
+                        os.remove(results_of_get_file)
+                else:
+                    # post_results_file is the results from the POST method of search class
+                    post_results_file = CACHE_PATH + '/' + md5_query + '.post'
+                    if os.path.exists(post_results_file):
+                        f = open(post_results_file)
+                        stored_results_of_post = pickle.load(f)
+                        f.close()
+                        results_mol_ids = stored_results_of_post['query_results_ids']
+                        simi_values = stored_results_of_post['simi_values']
+                        query_info = stored_results_of_post['query_info']
+                    else:
+                        return json.dumps({'status': 'Not yet posted!'})
+
+                    if results_mol_ids:
+
+                        db_obj = lm.database(env_db['HOST'], env_db['USER'], env_db['PASSWORD'], env_db['DBNAME'])
+                        sql_obj = lm.sql(env_db)
+
+                        if not pri_field in part_fields:
+                            select_cols = tables[0] + '.' + pri_field + ', ' + ', '.join(fields_to_show_list_part['fields'])
+                        else:
+                            select_cols = ', '.join(fields_to_show_list_part['fields'])
+                        query_string = 'SELECT %s FROM %s WHERE ( %s IN ( %s ) );' % (
+                                select_cols,
+                                sql_obj.gen_join_part_sql(tables, pri_field),
+                                tables[0] + '.' + pri_field, ', '.join(results_mol_ids) )
+                        time_before_search = time.time()
+                        # this step is always fast, so no lock is set
+                        results = db_obj.execute(query_string)
+                        time_consumed = time.time() - time_before_search
+                        query_info['time_consumed'] += time_consumed
+                        db_obj.close()
+
+                        simi_field = env_db['SIMI_FIELD']
+                        for r in results:
+                            tmpd = {}
+                            mol_id = ''
+                            if not pri_field in part_fields:
+                                tmpd[pri_field] = r[pri_field]
+                                mol_id = r[pri_field]
+
+                            for j in fields_to_show_list_part['fields']:
+                                j = re.sub(r'^[^\.]+\.', '', j)
+                                if j in [ dbd_obj.get_field(k) for k in env_db['COMPRESSED_KEYS'] ]:
+                                    # uncompress compressed entries
+                                    if j == dbd_obj.get_field(env_db['2D_STRUC_KEY']):
+                                        if session.removeh:
+                                            mol = lm.mymol('mol', zlib.decompress(r[j])).removeh()
+                                        else:
+                                            mol = zlib.decompress(r[j])
+                                        tmpd[j] = mol
+                                    else:
+                                        tmpd[j] = zlib.decompress(r[j])
+                                elif j == pri_field:
+                                    mol_id = r[j]
+                                    tmpd[j] = mol_id
+                                else:
+                                    tmpd[j] = r[j]
+                            if mol_id and simi_values and search_type == "3":
+                                tmpd[simi_field] = simi_values[mol_id]
+                            # l contains the mol info, each mol in a sublist: [ [...], [...] ]
+                            results_of_get.append(tmpd)
+
+                        if search_type == '3':
+                            table_heads = fields_to_show_list_part['comments'] + ['simi value']
+                            part_fields = fields_to_show_list_part['fields'] + [simi_field]
+                            part_fields = [ re.sub(r'^[^\.]+\.', '', i) for i in part_fields ]
+                            # sort the results on similarity
+                            if simi_values:
+                                results_of_get.sort( lambda e1, e2: - cmp(e1[simi_field], e2[simi_field]) )
+                            for i in results_of_get:
+                                i.update({simi_field: str(round(i[simi_field]*100, 2)) + '%'})
+
+                    stored_results_of_get = {
+                            'results_of_get': results_of_get,
+                            'part_fields': part_fields,
+                            'pri_and_struc_fields': {'pri_field': pri_field, 'struc_field': struc_field},
+                            'table_heads': table_heads,
+                            'query_info': query_info
+                            }
+
+                    # store the results
+                    f = open(results_of_get_file, 'w')
+                    pickle.dump(stored_results_of_get, f)
+                    f.close()
+
+                # results about to display
+                query_info = stored_results_of_get['query_info']
+                db_name = query_info['query_db']
+                query_mols_dic = query_info['query_mols_dic']
+                page = int(input.get('page'))
+                results_of_get = stored_results_of_get['results_of_get']
+                len_results = len(results_of_get)
+                # calculate the page thing
+                pages = ( lambda x, y: x % y and x / y + 1 or x / y ) (len_results, self.results_per_page)
+                show_range_left = self.results_per_page * (page - 1)
+                if show_range_left > len_results:
+                    show_range_left = len_results - ( len_results % self.results_per_page )
+                show_range_right = self.results_per_page * page
+
+                # store the results in a dict
+                results_dic.update({
+                    'result_list': results_of_get[show_range_left:show_range_right],
+                    'len_results': len_results,
+                    'db': db_name,
+                    'table_heads': stored_results_of_get['table_heads'],
+                    'part_fields': stored_results_of_get['part_fields'],
+                    'pri_and_struc_fields': stored_results_of_get['pri_and_struc_fields'],
+                    'max_results_num': query_info['max_results_num'],
+                    'pages': pages,
+                    'page': page,
+                    'min_simi': str(round(query_info['min_simi'], 2)),
+                    'search_mol': query_info['query_mol'],
+                    'query_mols_dic': query_info['query_mols_dic'],
+                    'query_id': md5_query,
+                    'time_consumed': round(query_info['time_consumed'], 2),
+                    'adv_search_query': query_info['adv_search_query'],
+                    'results_search_type': query_info['query_mode'],
+                    'last_query_id': query_info['last_query_id'],
+                    'last_db': query_info['last_db']
+                    })
+        except Exception, e:
+            results_dic['info'].append('check your query')
+            results_dic['info'].append(e)
+            return json.dumps(results_dic)
+
+        for key in ('mode_selected', 'db_selected',
+                'links', 'urls_dic', 'table_heads',
+                'last_db', 'part_fields', 'pri_and_struc_fields',
+                'lang', 'trans_class', 'info_head',
+                'html_title', 'current_page'):
+            self.results_dic.pop(key)
+        return json.dumps(results_dic)
+
+    def POST(self, name = ''):
+        # search types: 1: exact search, 2: substructure search,
+        # 3: similarity search, 4: advanced search, 5: superstructure search
+        input_raw = web.input()
+        if input_raw.has_key('query_format'):
+            qfmt = input_raw.get('query_format')
+            if qfmt == 'json' and input_raw.has_key('json'):
+                input = json.loads(input_raw.get('json'))
+            else:
+                input = input_raw
+        else:
+            input = input_raw
+
+        results_dic = tpl_results_dic.copy()
+        # check basic permission
+        if not is_permited(session.userid, session.usergroup, ('s')):
+            return json.dumps({'status': 'Permition denied!'})
+
+        query_smiles = ''
+        adv_search_query = ''
+        query_smiles_dic = {}
+        query_mols_dic = {}
+        max_results_num_from_query = 0
+        # for similarity search
+        min_simi = 0
+        simi_values_dic = {}
+        regex0 = ''
+        regex1 = ''
+        regex2 = ''
+        last_mol_ids = []
+        last_query_id = ''
+        last_db = ''
+        available_dbs = PUBLIC_DBS
+        if session.authorized:
+            available_dbs = DATABASES
+            self.results_dic.update({'dbs': available_dbs})
+
+        try:
+            if input.has_key('results_per_page'):
+                self.results_per_page = int(input.get('results_per_page'))
+                session.results_per_page = int(input.get('results_per_page'))
+            if input.has_key('max_results_num'):
+                self.max_results_num = int(input.get('max_results_num'))
+                session.max_results_num = int(input.get('max_results_num'))
+            if input.has_key('mol'):
+                search_mol = str(input.get('mol'))
+                session.search_mol = str(input.get('mol'))
+            else:
+                search_mol = ''
+
+            search_type = session.search_mode
+            if input.has_key('mode') and input.get('mode'):
+                if input.get('mode') in SEARCH_MODES:
+                    search_type = input.get('mode')
+                    session.search_mode = input.get('mode')
+                else:
+                    return json.dumps({'status': 'Invalid mode: %s' %input.get('mode')})
+
+            # chose which database to use
+            if input.has_key('db') and input.get('db'):
+                db_name = input.get('db')
+                if db_name not in available_dbs:
+                    return json.dumps({'status': 'DB not accessible!'})
+                session.db = input.get('db')
+            else:
+                db_name = session.db
+
+            env_db = ENVS[db_name]
+            sql_obj = lm.sql(env_db)
+            dbd_obj = dbd_objs[db_name]
+            tables = dbd_obj.tables
+            pri_field = env_db['PRI_FIELD']
+            smi_field = dbd_obj.get_field(env_db['SMILES_KEY'])
+            simi_field = env_db['SIMI_FIELD']
+
+            # in advanced mode, there could be more than one smiles and mols separated with "|".
+            if search_type == "4":
+                if input.has_key('query') and input.get('query'):
+                    adv_search_query = query_preprocessing(str(input.get('query'))) + ' ' # add a space at the end for regex match
+                    # recover escaped ' and ", for ' and " are legal in mode "4"
+                    adv_search_query = re.sub(r'\\[\'\"]', '"', adv_search_query)
+                else:
+                    return json.dumps({'status': 'Query imcomplete!'})
+                # get the smiless and mols from the input of advanced mode
+                query_smiles_dic = {}
+                query_mols_dic = {}
+                if input.has_key('smiless') and input.get('smiless'):
+                    for j in [ i for i in query_preprocessing(str(input.get('smiless'))).split('|') if i and i != '|' ]:
+                        tmpl = j.split(':')
+                        if len(tmpl) == 2:
+                            query_smiles_dic[tmpl[0]] = tmpl[1]
+                elif input.has_key('mols') and input.get('mols'):
+                    for j in [ i for i in query_preprocessing(str(input.get('mols'))).split('|') if i and i != '|' ]:
+                        tmpl = j.split(':')
+                        if len(tmpl) == 2:
+                            query_mols_dic[tmpl[0]] = tmpl[1]
+
+                # store in session
+                if query_smiles_dic:
+                    session.query_smiles_dic = query_smiles_dic
+                elif query_mols_dic:
+                    for k, v in query_smiles_dic.items():
+                        query_smiles_dic[k] = lm.mymol('mol', v).mol.write('smi')
+                if query_smiles_dic:
+                    session.query_smiles_dic = query_smiles_dic
+                if query_mols_dic:
+                    session.query_mols_dic = query_mols_dic
+
+                # check if the query legal
+                # first check if there are key words what are not in the abbr_dic
+                regex0 = re.compile(r'([><=!~]+ *[^ )(]+[ )(]*)|([)(])|([sS][uU][bBpP])|([mM][aA][xX])|([aA][nN][dD])|([oO][rR])|([nN][oR][tT])')
+                key_words = []
+                key_words = list(set(regex0.sub(' ', adv_search_query).split()))
+                for k in key_words:
+                    if not k in env_db['ABBR_DIC'].keys():
+                        return json.dumps({'status': 'Contains illegal words!'})
+                # second check if the mol buffer contains all needed molecules
+                regex1 = re.compile(r'[sS][uU][bBpP] *[!=]+ *[^ )(]*(?=[ )(]+)')
+                mol_key = ''
+                for i in regex1.findall(adv_search_query):
+                    mol_key = i.split('=')[-1].strip(' ')
+                    if not ( query_smiles_dic.has_key(mol_key) and query_smiles_dic[mol_key] ):
+                        return json.dumps({'status': 'Mol buffer imcomplete!'})
+
+                # replace some words (~ to like) and abstract the max (limit) value if it has
+                new_adv_search_query = adv_search_query.replace('~', ' LIKE ')
+                regex2 = re.compile(r'[mM][aA][xX] *=+ *[^ )(]*(?=[ )(]+)')
+                tmpl = regex2.findall(new_adv_search_query)
+                if len(tmpl) == 1:
+                    try:
+                        max_results_num_from_query = int(tmpl[0].split('=')[-1].strip(' '))
+                    except:
+                        pass
+                new_adv_search_query = regex2.sub('', new_adv_search_query)
+
+                try:
+                    query_sql = sql_obj.gen_adv_search_sql(new_adv_search_query, query_smiles_dic, env_db['ABBR_DIC'])
+                except Exception, e:
+                    return json.dumps({'status': 'Query error: %s' %str(e)})
+            elif (input.has_key('mol') and input.get('mol')) or (input.has_key('smiles') and input.get('smiles')):
+                if input.has_key('smiles') and input.get('smiles'):
+                    query_smiles = input.get('smiles')
+                else:
+                    query_smiles = query_preprocessing(lm.mymol('mol', str(input.get('mol'))).mol.write('smi'))
+                if search_type == "3":
+                    if input.has_key('min_simi') and input.get("min_simi"):
+                        try:
+                            min_simi = float(input.get("min_simi"))
+                        except:
+                            return json.dumps({'status': 'Min simi contains illegal char!'})
+                    else:
+                        return json.dumps({'status': 'Query imcomplete!'})
+                    query_sql = sql_obj.gen_simi_search_sql(query_smiles, min_simi)
+                else:
+                    if search_type == '1':
+                        type = '1'
+                    elif search_type == '2':
+                        type = '2'
+                    elif search_type == '5':
+                        type = '4'
+                    query_sql = sql_obj.gen_search_sql(query_smiles, type)
+            else:
+                return json.dumps({'status': 'Query imcomplete!'})
+
+            db_obj = lm.database(env_db['HOST'], env_db['USER'], env_db['PASSWORD'], env_db['DBNAME'])
+
+            results = []
+            results_tmp = True
+
+            # search in results
+            if input.has_key('search_in_results') and input.get('search_in_results'):
+                last_results_of_post_file = CACHE_PATH + '/' + input.get('search_in_results') + '.post'
+                if os.path.exists(last_results_of_post_file):
+                    f = open(last_results_of_post_file)
+                    last_results_of_post = pickle.load(f)
+                    f.close()
+                    last_mol_ids = last_results_of_post['query_results_ids']
+                    last_query_info = last_results_of_post['query_info']
+                    last_query_id = last_query_info['query_id']
+                    last_db = last_query_info['query_db']
+
+            # generates the sql string for query
+            if last_mol_ids:
+                query_string = 'SELECT %s, %s %s AND %s IN (%s)' % (
+                        tables[0] + '.' + pri_field,
+                        smi_field,
+                        query_sql,
+                        tables[0] + '.' + pri_field,
+                        ', '.join(last_mol_ids) )
+            else:
+                query_string = 'SELECT %s, %s %s' % (
+                        tables[0] + '.' + pri_field,
+                        smi_field,
+                        query_sql)
+
+            # check if there's already a results file
+            md5_query = md5(query_string + db_name + search_type)
+            session.md5_query = md5_query
+            results_of_post_file = CACHE_PATH + '/' + md5_query + '.post'
+            lock_file = results_of_post_file + '.lock'
+            if os.path.exists(results_of_post_file):
+                if time.time() - os.path.getmtime(results_of_post_file) >= RESULTS_FILE_TIME_OUT:
+                    os.remove(results_of_post_file)
+                else:
+                    return json.dumps({'status': 'OK',
+                        'result_url': URLS_DIC['webapi_url'] + '?page=1&db=%s&query_id=%s' %(db_name, md5_query)})
+
+            # check if the lock file exists, if exists then wait, else continue.
+            while os.path.exists(lock_file):
+                # check if the life span of lock_file reached
+                if time.time() - os.path.getmtime(lock_file) >= LOCK_FILE_LIFE_SPAN:
+                    os.remove(lock_file)
+                else:
+                    time.sleep(5)
+
+            # define filters
+            filter = None
+            if search_type == "1":
+                def filter(results_dict, mol_obj = lm.mymol('smi', query_smiles), smiles_field = smi_field):
+                    if results_dict.has_key(smiles_field):
+                        return mol_obj.gen_openbabel_can_smiles() == results_dict[smiles_field]
+                    return False
+            elif search_type == "2":
+                def filter(results_dict, mol_obj = lm.mymol('smi', query_smiles), smiles_field = smi_field):
+                    if results_dict.has_key(smiles_field):
+                        return mol_obj.sub_match('smi', results_dict[smiles_field])
+                    return False
+            elif search_type == "3":
+                # similarity search actually needs no filter.
+                pass
+            elif search_type == '4':
+                sub_smiles = []
+                sup_smiles = []
+                sub_m_objs = []
+                sup_m_objs = []
+                re_sub = re.compile(r'[sS][uU][bB] *[!=]+ *[^ )(]*(?=[ )(]+)')
+                re_sup = re.compile(r'[sS][uU][pP] *[!=]+ *[^ )(]*(?=[ )(]+)')
+                for i in re_sub.findall(adv_search_query):
+                    # for querying for a molecule contains no a paticular substructure always
+                    # filters out some positive ones, so it's no need to filter here any more,
+                    # hence we exclude those '!=' ones here.
+                    if re.findall(r'!=', i):
+                        continue
+                    elif re.findall(r'[^!]=', i):
+                        mol_key = i.split('=')[-1].strip(' ')
+                        if query_smiles_dic.has_key(mol_key) and query_smiles_dic[mol_key]:
+                            sub_smiles.append(query_smiles_dic[mol_key])
+                for i in re_sup.findall(adv_search_query):
+                    # for querying for the superstructure of a paticular molecule always
+                    # filters out some positive ones, so it's no need to filter here any more,
+                    # hence we exclude those '!=' ones here.
+                    if re.findall(r'!=', i):
+                        continue
+                    elif re.findall(r'[^!]=', i):
+                        mol_key = i.split('=')[-1].strip(' ')
+                        if query_smiles_dic.has_key(mol_key) and query_smiles_dic[mol_key]:
+                            sup_smiles.append(query_smiles_dic[mol_key])
+
+                sub_m_objs = [ lm.mymol('smi', m) for m in sub_smiles ]
+                sup_m_objs = [ lm.mymol('smi', m) for m in sup_smiles ]
+
+                # filter is only needed to define when the m_objs list is not empty.
+                if sub_m_objs or sup_m_objs:
+                    def filter(results_dict,
+                            sub_mol_objs = sub_m_objs,
+                            sup_mol_objs = sup_m_objs,
+                            smiles_field = smi_field):
+                        if results_dict.has_key(smiles_field):
+                            for i in sub_mol_objs:
+                                if not i.sub_match('smi', results_dict[smiles_field]):
+                                    return False
+                            for i in sup_mol_objs:
+                                if not i.sup_match('smi', results_dict[smiles_field]):
+                                    return False
+                            return True
+                        return False
+
+            elif search_type == '5':
+                def filter(results_dict, mol_obj = lm.mymol('smi', query_smiles), smiles_field = smi_field):
+                    if results_dict.has_key(smiles_field):
+                        return mol_obj.sup_match('smi', results_dict[smiles_field])
+                    return False
+
+            # limit the results
+            if max_results_num_from_query:
+                num_per_select = 150
+                max_results_num = max_results_num_from_query
+            elif search_type == '3':
+                max_results_num = 10
+            else:
+                num_per_select = 150
+                max_results_num = self.max_results_num
+
+            # search in database and filter the reuslts
+            # record time consuming
+            time_before_search = time.time()
+            if search_type in ('1', '3'):
+                if search_type == '1':
+                    limit = '' #' LIMIT 1'
+                elif search_type == '3':
+                    limit = ' LIMIT %s ' %(max_results_num,)
+                # set lock to avoid duplocated search
+                open(lock_file, 'w')
+                results = db_obj.execute(query_string + limit + ';')
+                if os.path.exists(lock_file):
+                    os.remove(lock_file)
+
+                db_obj.close()
+            elif search_type in ('2', '4', '5'):
+                # set lock to avoid duplocated search
+                open(lock_file, 'w')
+                results = db_obj.query(
+                        query_string,
+                        filter,
+                        tables[0] + '.' + pri_field,
+                        max_results_num,
+                        num_per_select)
+                if os.path.exists(lock_file):
+                    os.remove(lock_file)
+
+                db_obj.close()
+
+            time_consumed = time.time() - time_before_search
+
+            # preprocessing the results to store
+            # cut of the extra results
+            results = results[:max_results_num]
+            results_dic_to_store = {}
+            mol_id_to_store = []
+            query_info = {}
+            for r in results:
+                if r.has_key(pri_field):
+                    id = r[pri_field]
+                    mol_id_to_store.append(str(id))
+                    if r.has_key(simi_field):
+                        simi_values_dic[id] = r[simi_field]
+            query_info = {
+                    'query_mols_dic': query_mols_dic,
+                    'query_smiles_dic': query_smiles_dic,
+                    'query_smiles': query_smiles,
+                    'query_mol': search_mol,
+                    'query_string': query_string,
+                    'query_db': db_name,
+                    'max_results_num': max_results_num,
+                    'adv_search_query': adv_search_query,
+                    'query_mode': search_type,
+                    'min_simi': min_simi,
+                    'time_consumed': time_consumed,
+                    'last_query_id': last_query_id,
+                    'last_db': last_db,
+                    'query_id': md5_query
+                    }
+            results_dic_to_store = {
+                    'query_results_ids': mol_id_to_store,
+                    'simi_values': simi_values_dic,
+                    'query_info': query_info
+                    }
+            # store search results
+            f = open(results_of_post_file, 'w')
+            pickle.dump(results_dic_to_store, f)
+            f.close()
+            return json.dumps({'status': 'OK',
+                'result_url': URLS_DIC['webapi_url'] + '?page=1&db=%s&query_id=%s' %(db_name, md5_query)})
+        except Exception, e:
+            return json.dumps({'status': 'Query error: %s' %str(e)})
+
 class molinfo:
     def __init__(self):
         # set the target language to session.lang
@@ -1297,7 +1897,7 @@ class molinfo:
             results_dic['html_title'] = 'query err'
             return html_info(results_dic)
 
-class edit:
+
     def __init__(self):
         # set the target language to session.lang
         trans_class.lang = session.lang
