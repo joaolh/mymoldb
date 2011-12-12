@@ -438,7 +438,6 @@ class sql():
         join_part_sql = self.gen_join_part_sql(self.dbd.tables, self.env['PRI_FIELD'])
         return ' FROM %s WHERE (%s)' %(join_part_sql, result)
 
-    @classmethod
     def gen_sql_head(self, def_file = None):
         '''
         gen_sql_head() -- Returns a dict.
