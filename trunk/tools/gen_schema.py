@@ -15,9 +15,21 @@ if len(sys.argv) < 2:
     print 'Useage: ' + sys.argv[0] + ' output.sql'
     sys.exit(1)
 else:
-    db = raw_input('Choose db in ' + ', '.join(ENVS.keys()) + ': ')
-    f = open(sys.argv[1], 'w')
-    sql_obj = sql(ENVS[db])
-    for v in sql_obj.gen_sql_head().values():
-        f.write(v + '\n')
-    f.close()
+    dbs = []
+    for k, v in ENVS.items():
+        if v.has_key('DEF_FILE'):
+            dbs.append(k)
+    db = None
+    while not db in dbs:
+        db = raw_input('Please choose db in ( %s ): ' %', '.join(dbs))
+        if not db in dbs:
+            print 'Error, db name not valid!'
+    try:
+        f = open(sys.argv[1], 'w')
+        sql_obj = sql(ENVS[db])
+        for v in sql_obj.gen_sql_head().values():
+            f.write(v + '\n')
+        f.close()
+        print '%s successfully generated! Now you can execute the generated sql file to create a new database.' %sys.argv[1]
+    except Exception, e:
+        print e
