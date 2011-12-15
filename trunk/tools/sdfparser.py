@@ -40,6 +40,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     env = ENVS[db]
+    print savedir
     if not os.path.exists(savedir):
         os.mkdir(savedir)
 
@@ -55,9 +56,13 @@ if __name__ == "__main__":
     mol_id_key = 'PUBCHEM_COMPOUND_CID'
     results = {}
 
-    for i in L:
+    for n, i in enumerate(L):
         m = sdf.mol_parse(i)
-        smi = m[smi_key]
+        try:
+            smi = m[smi_key]
+        except:
+            total_rec += 1
+            continue
         mol_id = m[mol_id_key]
         for id_key in env['PRI_KEYS']:
             tmp_dict[id_key] = mol_id
@@ -76,7 +81,7 @@ if __name__ == "__main__":
             except:
                 results[k] = v + '\n'
         add_head = add_head and False
-        if num_rec == 5000 or total_rec == len_L:
+        if num_rec == 5000 or total_rec == len_L or n+1 == len(L):
             for k, v in results.items():
                 open(savedir + '/' + sdf_file.replace('.sdf', '') + '_' + k + '.sql', 'a').write(v)
             num_rec = 0

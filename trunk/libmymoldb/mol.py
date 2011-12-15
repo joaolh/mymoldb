@@ -28,7 +28,7 @@ class sdf():
                 # some times the first line of the sdf may be $$$$, skip such lines
                 if not line.startswith("$$$$"):
                     l += line
-        if l:
+        if l.replace('\r', '').replace('\n', '').replace('\t', '').replace(' ', '') != '':
             sdfs.append(l)
             l = ""
         return sdfs
@@ -92,7 +92,7 @@ class mymol():
         ob_can_smi = self.gen_openbabel_can_smiles()
         data.update( {
                 'TPSA': desc['TPSA'],
-                'LogP': desc['LogP'],
+                'LogP': desc['logP'],
                 'MR': desc['MR'],
                 'FORMULA': self.mol.formula,
                 'MOLWEIGHT': self.mol.molwt,
